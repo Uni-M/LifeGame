@@ -160,14 +160,16 @@ public class GameField extends JPanel implements ActionListener {
 
         @Override
         public void mouseClicked(MouseEvent e) {
-            Point point = e.getPoint();
-            int x = point.x;
-            int y = point.y;
+            if (!start) {
+                Point point = e.getPoint();
+                int x = point.x;
+                int y = point.y;
 
-            int newX = x - x % DOT_SIZE;
-            int newY = y - y % DOT_SIZE;
+                int newX = x - x % DOT_SIZE;
+                int newY = y - y % DOT_SIZE;
 
-            cells[newX][newY] = true;
+                cells[newX][newY] = true;
+            }
 
         }
 
