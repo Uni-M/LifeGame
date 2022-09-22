@@ -23,7 +23,7 @@ public class GameField extends JPanel implements ActionListener {
     private Timer timer;
 
     private boolean inGame = true;
-    private boolean start = false;
+    private boolean pause = true;
 
     public GameField() {
         loadImages();
@@ -133,7 +133,7 @@ public class GameField extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) { //собития которые происходят когда тикает таймер
-        if (inGame && start) {
+        if (inGame && !pause) {
             life();
         }
         repaint(); //перерисовывает карту для обновления при движении
@@ -147,10 +147,10 @@ public class GameField extends JPanel implements ActionListener {
             super.keyPressed(e);
             int key = e.getKeyCode();
             if (key == KeyEvent.VK_ENTER) {
-                start = true;
+                pause = false;
             }
             if (key == KeyEvent.VK_ESCAPE) {
-                start = false;
+                pause = true;
             }
         }
 
@@ -160,7 +160,7 @@ public class GameField extends JPanel implements ActionListener {
 
         @Override
         public void mouseClicked(MouseEvent e) {
-            if (!start) {
+            if (pause) {
                 Point point = e.getPoint();
                 int x = point.x;
                 int y = point.y;
