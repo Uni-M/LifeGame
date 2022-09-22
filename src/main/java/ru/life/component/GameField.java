@@ -25,13 +25,21 @@ public class GameField extends JPanel implements ActionListener {
     private boolean inGame = true;
     private boolean pause = true;
 
+    MouseListener mouseListener = new MouseListenerImpl();
+
     public GameField() {
         loadImages();
         initGame();
         addKeyListener(new KeyAdapterImpl());
-        addMouseListener(new MouseListenerImpl());
+        addMouseListener(mouseListener);
         setFocusable(true);
         // TODO добавить две кнопки старт и паузу и выбор дефолтных комбинаций
+//
+//        JButton button1 = new JButton("Pause");
+//        button1.setPreferredSize(new Dimension(160, 34));
+//        button1.setLocation(SIZE_WIDTH-180, 40);
+//        add(button1);
+//        button1.addMouseListener(mouseListener);
     }
 
     private void initGame() { // Старт при нажатии кнопки старт или энтер???
@@ -160,6 +168,7 @@ public class GameField extends JPanel implements ActionListener {
 
         @Override
         public void mouseClicked(MouseEvent e) {
+
             if (pause) {
                 Point point = e.getPoint();
                 int x = point.x;
@@ -168,9 +177,13 @@ public class GameField extends JPanel implements ActionListener {
                 int newX = x - x % DOT_SIZE;
                 int newY = y - y % DOT_SIZE;
 
-                cells[newX][newY] = true;
+                if (SwingUtilities.isLeftMouseButton(e)) {
+                    cells[newX][newY] = true;
+                }
+                if (SwingUtilities.isRightMouseButton(e)) {
+                    cells[newX][newY] = false;
+                }
             }
-
         }
 
         @Override

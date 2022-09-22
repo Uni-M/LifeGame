@@ -8,6 +8,9 @@ import ru.life.component.GameField;
 
 import javax.swing.*;
 
+import static ru.life.constant.Constant.SIZE_HEIGHT;
+import static ru.life.constant.Constant.SIZE_WIDTH;
+
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
@@ -21,7 +24,7 @@ public class WindowConfig {
             JFrame frame = new JFrame();
             frame.setTitle("Life");
             frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-            frame.setSize(960, 655);
+            frame.setSize(SIZE_WIDTH+15, SIZE_HEIGHT+40);
             frame.setLocation(200, 30);
             frame.add(new GameField());
             frame.setVisible(true);
