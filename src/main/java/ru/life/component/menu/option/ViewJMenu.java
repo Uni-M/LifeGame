@@ -5,6 +5,7 @@ import ru.life.constant.PictureCells;
 
 import javax.swing.*;
 import java.awt.event.ItemEvent;
+import java.awt.event.KeyEvent;
 
 import static ru.life.component.GameField.getTimer;
 import static ru.life.component.GameField.setCellFileName;
@@ -14,13 +15,14 @@ public class ViewJMenu extends JMenu {
 
     public ViewJMenu(String s) {
         super(s);
+        this.setMnemonic(KeyEvent.VK_V);
         createButtons();
     }
 
     private void createButtons() {
 
         // цвет/настройка скорости/
-        JMenu colors = new JMenu("Change color");
+        JMenuItem colors = new JMenuItem("Change color", KeyEvent.VK_C);
         this.add(colors);
         ButtonGroup colorGroup = new ButtonGroup();
 
@@ -47,7 +49,7 @@ public class ViewJMenu extends JMenu {
         this.addSeparator();
 
         // TODO переделать и добавить KeyStroke
-        JMenuItem setSpeed = this.add(new JMenuItem("Speed"));
+        JMenuItem setSpeed = this.add(new JMenuItem("Speed", KeyEvent.VK_S));
         setSpeed.addActionListener(e -> {
             GameTimer timer = getTimer();
             JSlider slider = new JSlider(SwingConstants.HORIZONTAL, 0, 1000, timer.getSpeed());

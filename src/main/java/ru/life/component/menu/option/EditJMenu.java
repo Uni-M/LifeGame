@@ -12,13 +12,14 @@ public class EditJMenu extends JMenu {
 
     public EditJMenu(String s) {
         super(s);
+        this.setMnemonic(KeyEvent.VK_E);
         createButtons();
     }
 
     private void createButtons() {
 
         // старт/Шаг вперед/шаг назад/пауза/
-        JMenuItem start = this.add(new JMenuItem("Start/Pause"));
+        JMenuItem start = this.add(new JMenuItem("Start/Pause", KeyEvent.VK_S));
         start.addActionListener(e -> setPause(!getPause()));
         start.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0));
 
@@ -28,7 +29,7 @@ public class EditJMenu extends JMenu {
 
         this.addSeparator();
 
-        JMenuItem step = this.add(new JMenuItem("Step forward"));
+        JMenuItem step = this.add(new JMenuItem("Step forward", KeyEvent.VK_F));
         step.addActionListener(e -> setStep(true));
         step.setAccelerator(KeyStroke.getKeyStroke("ctrl S"));
 
