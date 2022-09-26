@@ -1,15 +1,17 @@
 package ru.life.component;
 
+import ru.life.constant.PictureCells;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
-import static ru.life.constant.Constant.*;
+import static ru.life.constant.Constant.DOT_SIZE;
+import static ru.life.constant.Constant.SIZE_HEIGHT;
+import static ru.life.constant.Constant.SIZE_WIDTH;
 
 public class GameField extends JPanel implements ActionListener {
 
@@ -19,27 +21,28 @@ public class GameField extends JPanel implements ActionListener {
     private boolean[][] cells = new boolean[SIZE_WIDTH][SIZE_HEIGHT];
     private boolean[][] cellsTemp = new boolean[SIZE_WIDTH][SIZE_HEIGHT];
 
-    int speed = 500;
-    private Timer timer;
+    private static GameTimer timer = new GameTimer();;
 
     private boolean inGame = true;
-    private boolean pause = true;
+    private static boolean reLoad = false;
+    private static boolean pause = true;
 
-    MouseListener mouseListener = new MouseListenerImpl();
+    private static String cellFileName = PictureCells.DEFAULT.getFileName();
+
 
     public GameField() {
         loadImages();
         initGame();
-        addKeyListener(new KeyAdapterImpl());
-        addMouseListener(mouseListener);
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                click(e);
+            }
+        });
         setFocusable(true);
-        // TODO добавить две кнопки старт и паузу и выбор дефолтных комбинаций
-//
-//        JButton button1 = new JButton("Pause");
-//        button1.setPreferredSize(new Dimension(160, 34));
-//        button1.setLocation(SIZE_WIDTH-180, 40);
-//        add(button1);
-//        button1.addMouseListener(mouseListener);
+        // TODO добавить выбор дефолтных комбинаций ?
+
     }
 
     private void initGame() { // Старт при нажатии кнопки старт или энтер???
@@ -48,41 +51,62 @@ public class GameField extends JPanel implements ActionListener {
                 cells[i * DOT_SIZE][j * DOT_SIZE] = false;
             }
         }
-
-        timer = new Timer(speed, this);
-        timer.start();
+        Timer t = new Timer(timer.getSpeed(), this);
+        timer.setTimer(t);
+        t.start();
     }
 
     // Рисунки клеток
     private void loadImages() {
-        ImageIcon iid = new ImageIcon("src/main/resources/dot.png");
+        ImageIcon iid = new ImageIcon(cellFileName);
         dot = iid.getImage();
         ImageIcon iie = new ImageIcon("src/main/resources/point.png");
         emptyDot = iie.getImage();
 
     }
 
+    public void reLoadImages() {
+        ImageIcon iid = new ImageIcon(cellFileName);
+        dot = iid.getImage();
+
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
-
-        super.paintComponent(g);
+        Graphics2D g2d = (Graphics2D) g;
+        super.paintComponent(g2d);
 
         if (inGame) {
+
+            if (reLoad) {
+                reLoadImages();
+                reLoad = !reLoad;
+            }
+
+            if (timer.isReStartTimer()) {
+                timer.getTimer().stop();
+                Timer t = new Timer(timer.getSpeed(), this);
+                timer.setTimer(t);
+
+                t.start();
+                timer.setReStartTimer(false);
+            }
 
             for (int i = 0; i < SIZE_WIDTH / 16; i++) {
                 for (int j = 0; j < SIZE_HEIGHT / 16; j++) {
                     if (!cells[i * DOT_SIZE][j * DOT_SIZE]) {
-                        g.drawImage(emptyDot, i * DOT_SIZE, j * DOT_SIZE, this);
+                        g2d.drawImage(emptyDot, i * DOT_SIZE, j * DOT_SIZE, this);
                     } else {
-                        g.drawImage(dot, i * DOT_SIZE, j * DOT_SIZE, this);
+                        g2d.drawImage(dot, i * DOT_SIZE, j * DOT_SIZE, this);
                     }
                 }
             }
+
         } else {
             String end = "Game Over!";
-            g.setColor(Color.BLACK);
-            g.setFont(new Font("Courier New", Font.BOLD, 20));
-            g.drawString(end, SIZE_WIDTH / 2 - (end.length() * DOT_SIZE) / 2, SIZE_HEIGHT / 2);
+            g2d.setColor(Color.BLACK);
+            g2d.setFont(new Font("Courier New", Font.BOLD, 20));
+            g2d.drawString(end, SIZE_WIDTH / 2 - (end.length() * DOT_SIZE) / 2, SIZE_HEIGHT / 2);
         }
     }
 
@@ -147,60 +171,42 @@ public class GameField extends JPanel implements ActionListener {
         repaint(); //перерисовывает карту для обновления при движении
     }
 
+    private void click(MouseEvent e) {
+        if (pause) {
+            Point point = e.getPoint();
+            int x = point.x;
+            int y = point.y;
 
-    class KeyAdapterImpl extends KeyAdapter {
+            int newX = x - x % DOT_SIZE;
+            int newY = y - y % DOT_SIZE;
 
-        @Override
-        public void keyPressed(KeyEvent e) {
-            super.keyPressed(e);
-            int key = e.getKeyCode();
-            if (key == KeyEvent.VK_ENTER) {
-                pause = false;
+            if (SwingUtilities.isLeftMouseButton(e)) {
+                cells[newX][newY] = true;
             }
-            if (key == KeyEvent.VK_ESCAPE) {
-                pause = true;
+            if (SwingUtilities.isRightMouseButton(e)) {
+                cells[newX][newY] = false;
             }
         }
-
     }
 
-    class MouseListenerImpl implements MouseListener {
+    public static void setReLoad(boolean reLoad) {
+        GameField.reLoad = reLoad;
+    }
 
-        @Override
-        public void mouseClicked(MouseEvent e) {
+    public static void setCellFileName(String cellFileName) {
+        GameField.cellFileName = cellFileName;
+    }
 
-            if (pause) {
-                Point point = e.getPoint();
-                int x = point.x;
-                int y = point.y;
+    public static void setPause(boolean pause) {
+        GameField.pause = pause;
+    }
 
-                int newX = x - x % DOT_SIZE;
-                int newY = y - y % DOT_SIZE;
+    public static boolean getPause() {
+        return pause;
+    }
 
-                if (SwingUtilities.isLeftMouseButton(e)) {
-                    cells[newX][newY] = true;
-                }
-                if (SwingUtilities.isRightMouseButton(e)) {
-                    cells[newX][newY] = false;
-                }
-            }
-        }
-
-        @Override
-        public void mousePressed(MouseEvent e) {
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent e) {
-        }
-
-        @Override
-        public void mouseEntered(MouseEvent e) {
-        }
-
-        @Override
-        public void mouseExited(MouseEvent e) {
-        }
+    public static GameTimer getTimer() {
+        return timer;
     }
 
 }

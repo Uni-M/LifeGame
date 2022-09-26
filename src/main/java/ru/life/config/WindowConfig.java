@@ -5,11 +5,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import ru.life.component.GameField;
+import ru.life.component.GameTimer;
+import ru.life.component.MainMenuBar;
 
 import javax.swing.*;
+import java.awt.*;
 
-import static ru.life.constant.Constant.SIZE_HEIGHT;
-import static ru.life.constant.Constant.SIZE_WIDTH;
+import static ru.life.constant.Constant.FRAME_SIZE_HEIGHT;
+import static ru.life.constant.Constant.FRAME_SIZE_WIDTH;
 
 @Slf4j
 @Configuration
@@ -21,14 +24,21 @@ public class WindowConfig {
         System.setProperty("java.awt.headless", "false");
 
         SwingUtilities.invokeLater(() -> {
+            Toolkit toolkit = Toolkit.getDefaultToolkit();
+            Dimension dimension = toolkit.getScreenSize();
+
             JFrame frame = new JFrame();
             frame.setTitle("Life");
             frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-            frame.setSize(SIZE_WIDTH+15, SIZE_HEIGHT+40);
-            frame.setLocation(200, 30);
+            frame.setBounds((dimension.width - FRAME_SIZE_WIDTH) / 2,
+                    (dimension.height - FRAME_SIZE_HEIGHT) / 2,
+                    FRAME_SIZE_WIDTH,
+                    FRAME_SIZE_HEIGHT);
             frame.add(new GameField());
             frame.setVisible(true);
-        });
+            frame.setJMenuBar(new MainMenuBar());
+            frame.revalidate();
 
+        });
     }
 }
