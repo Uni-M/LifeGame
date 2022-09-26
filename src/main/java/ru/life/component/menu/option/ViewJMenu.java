@@ -12,7 +12,7 @@ import static ru.life.component.GameField.setReLoad;
 
 public class ViewJMenu extends JMenu {
 
-    public ViewJMenu (String s) {
+    public ViewJMenu(String s) {
         super(s);
         createButtons();
     }
@@ -38,13 +38,16 @@ public class ViewJMenu extends JMenu {
                 }
             });
 
+            c.setAccelerator(KeyStroke.getKeyStroke(String.valueOf(pictureCells.ordinal()+1)));
+
             colorGroup.add(c);
             colors.add(c);
         }
 
         this.addSeparator();
 
-        JMenuItem setSpeed = this.add(new JMenuItem("Speed", 'E'));
+        // TODO переделать и добавить KeyStroke
+        JMenuItem setSpeed = this.add(new JMenuItem("Speed"));
         setSpeed.addActionListener(e -> {
             GameTimer timer = getTimer();
             JSlider slider = new JSlider(SwingConstants.HORIZONTAL, 0, 1000, timer.getSpeed());
@@ -63,4 +66,4 @@ public class ViewJMenu extends JMenu {
         });
     }
 
-    }
+}

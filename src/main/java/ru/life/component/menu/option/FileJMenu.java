@@ -12,11 +12,11 @@ public class FileJMenu extends JMenu {
 
     private void createButtons() {
         // тут должны быть общие возможности, открыть/закрыть/сохранить
-        this.add(new JMenuItem("Open", 'O')).setEnabled(false);
-        this.add(new JMenuItem("Save", 'S')).setEnabled(false);
+        this.add(new JMenuItem("Open")).setEnabled(false);
+        this.add(new JMenuItem("Save")).setEnabled(false);
         this.addSeparator();
 
-        JMenuItem exit = this.add(new JMenuItem("Exit", 'E'));
+        JMenuItem exit = this.add(new JMenuItem("Exit"));
         exit.addActionListener(e -> System.exit(0));
         exit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0));
     }

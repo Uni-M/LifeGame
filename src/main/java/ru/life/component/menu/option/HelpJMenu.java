@@ -3,11 +3,11 @@ package ru.life.component.menu.option;
 import javax.swing.*;
 
 import static ru.life.component.GameField.setPause;
-import static ru.life.constant.Constant.HELP_MESSAGE;
+import static ru.life.constant.HelpMessage.HELP_MESSAGE;
 
 public class HelpJMenu extends JMenu {
 
-    public HelpJMenu (String s) {
+    public HelpJMenu(String s) {
         super(s);
         createButtons();
     }
@@ -15,15 +15,27 @@ public class HelpJMenu extends JMenu {
     private void createButtons() {
 
         // Новое окно с общей информацией, которую закрыть после прочтения можно
-        JMenuItem getHelp = this.add(new JMenuItem("Help", 'E'));
-        getHelp.addActionListener(e -> {
+        JMenuItem help = this.add(new JMenuItem("Help"));
+
+        help.addActionListener(e -> {
             setPause(true);
+            JScrollPane scrollPane = new JScrollPane(createText());
             JOptionPane.showMessageDialog(this,
-                    HELP_MESSAGE,
-                    "Help",
+                    scrollPane,
+                    "Game rules",
                     JOptionPane.PLAIN_MESSAGE);
-            setPause(false);
         });
+        help.setAccelerator(KeyStroke.getKeyStroke("ctrl H"));
+    }
+
+    private JTextArea createText() {
+        JTextArea text = new JTextArea(25, 60);
+        text.setLineWrap(true);
+        text.setWrapStyleWord(true);
+        text.setText(HELP_MESSAGE);
+        text.setEditable(false);
+
+        return text;
     }
 
 }

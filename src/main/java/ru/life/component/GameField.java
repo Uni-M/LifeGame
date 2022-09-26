@@ -9,9 +9,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import static ru.life.constant.Constant.DOT_SIZE;
-import static ru.life.constant.Constant.SIZE_HEIGHT;
-import static ru.life.constant.Constant.SIZE_WIDTH;
+import static ru.life.constant.Size.DOT_SIZE;
+import static ru.life.constant.Size.SIZE_HEIGHT;
+import static ru.life.constant.Size.SIZE_WIDTH;
 
 public class GameField extends JPanel implements ActionListener {
 
@@ -21,9 +21,10 @@ public class GameField extends JPanel implements ActionListener {
     private boolean[][] cells = new boolean[SIZE_WIDTH][SIZE_HEIGHT];
     private boolean[][] cellsTemp = new boolean[SIZE_WIDTH][SIZE_HEIGHT];
 
-    private static GameTimer timer = new GameTimer();;
+    private static final GameTimer timer = new GameTimer();
 
-    private boolean inGame = true;
+    private static boolean step = false;
+    private static boolean clean = false;
     private static boolean reLoad = false;
     private static boolean pause = true;
 
@@ -76,38 +77,30 @@ public class GameField extends JPanel implements ActionListener {
         Graphics2D g2d = (Graphics2D) g;
         super.paintComponent(g2d);
 
-        if (inGame) {
+        if (reLoad) {
+            reLoadImages();
+            reLoad = !reLoad;
+        }
 
-            if (reLoad) {
-                reLoadImages();
-                reLoad = !reLoad;
-            }
+        if (timer.isReStartTimer()) {
+            timer.getTimer().stop();
+            Timer t = new Timer(timer.getSpeed(), this);
+            timer.setTimer(t);
 
-            if (timer.isReStartTimer()) {
-                timer.getTimer().stop();
-                Timer t = new Timer(timer.getSpeed(), this);
-                timer.setTimer(t);
+            t.start();
+            timer.setReStartTimer(false);
+        }
 
-                t.start();
-                timer.setReStartTimer(false);
-            }
-
-            for (int i = 0; i < SIZE_WIDTH / 16; i++) {
-                for (int j = 0; j < SIZE_HEIGHT / 16; j++) {
-                    if (!cells[i * DOT_SIZE][j * DOT_SIZE]) {
-                        g2d.drawImage(emptyDot, i * DOT_SIZE, j * DOT_SIZE, this);
-                    } else {
-                        g2d.drawImage(dot, i * DOT_SIZE, j * DOT_SIZE, this);
-                    }
+        for (int i = 0; i < SIZE_WIDTH / 16; i++) {
+            for (int j = 0; j < SIZE_HEIGHT / 16; j++) {
+                if (!cells[i * DOT_SIZE][j * DOT_SIZE]) {
+                    g2d.drawImage(emptyDot, i * DOT_SIZE, j * DOT_SIZE, this);
+                } else {
+                    g2d.drawImage(dot, i * DOT_SIZE, j * DOT_SIZE, this);
                 }
             }
-
-        } else {
-            String end = "Game Over!";
-            g2d.setColor(Color.BLACK);
-            g2d.setFont(new Font("Courier New", Font.BOLD, 20));
-            g2d.drawString(end, SIZE_WIDTH / 2 - (end.length() * DOT_SIZE) / 2, SIZE_HEIGHT / 2);
         }
+
     }
 
     private void life() {
@@ -164,10 +157,22 @@ public class GameField extends JPanel implements ActionListener {
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) { //собития которые происходят когда тикает таймер
-        if (inGame && !pause) {
+    public void actionPerformed(ActionEvent e) { //события которые происходят когда тикает таймер
+
+        // TODO заменить на statemachine
+        if (!pause && !clean && !step) {
             life();
+
+        } else if(pause && !clean && step) {
+            life();
+            step = false;
+
+        } else if (clean){
+            clone(cells, new boolean[SIZE_WIDTH][SIZE_HEIGHT]);
+            clean = false;
+            pause = true;
         }
+
         repaint(); //перерисовывает карту для обновления при движении
     }
 
@@ -208,5 +213,14 @@ public class GameField extends JPanel implements ActionListener {
     public static GameTimer getTimer() {
         return timer;
     }
+
+    public static void setClean(boolean clean) {
+        GameField.clean = clean;
+    }
+
+    public static void setStep(boolean step) {
+        GameField.step = step;
+    }
+
 
 }
