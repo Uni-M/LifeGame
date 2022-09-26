@@ -5,8 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import ru.life.component.GameField;
-import ru.life.component.GameTimer;
-import ru.life.component.MainMenuBar;
+import ru.life.component.menu.MainMenuBar;
 
 import javax.swing.*;
 import java.awt.*;
