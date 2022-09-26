@@ -22,7 +22,8 @@ public class ViewJMenu extends JMenu {
     private void createButtons() {
 
         // цвет/настройка скорости/
-        JMenuItem colors = new JMenuItem("Change color", KeyEvent.VK_C);
+        JMenu colors = new JMenu("Change color");
+        colors.setMnemonic(KeyEvent.VK_C);
         this.add(colors);
         ButtonGroup colorGroup = new ButtonGroup();
 
