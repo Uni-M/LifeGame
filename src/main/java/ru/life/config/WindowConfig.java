@@ -10,8 +10,8 @@ import ru.life.component.menu.MainMenuBar;
 import javax.swing.*;
 import java.awt.*;
 
-import static ru.life.constant.Constant.FRAME_SIZE_HEIGHT;
-import static ru.life.constant.Constant.FRAME_SIZE_WIDTH;
+import static ru.life.constant.Size.FRAME_SIZE_HEIGHT;
+import static ru.life.constant.Size.FRAME_SIZE_WIDTH;
 
 @Slf4j
 @Configuration
@@ -40,4 +40,5 @@ public class WindowConfig {
 
         });
     }
+
 }
