@@ -10,6 +10,8 @@ import java.awt.event.KeyEvent;
 import static ru.life.component.GameField.getTimer;
 import static ru.life.component.GameField.setCellFileName;
 import static ru.life.component.GameField.setReLoad;
+import static ru.life.constant.MessageTemplate.MAX_SPEED;
+import static ru.life.constant.MessageTemplate.MIN_SPEED;
 
 public class ViewJMenu extends JMenu {
 
@@ -20,6 +22,8 @@ public class ViewJMenu extends JMenu {
     }
 
     private void createButtons() {
+        // TODO изменить через Color color = JColorChooser.showDialog(this, "Choose color", Color.BLACK); ??
+        // переделать чтобы не было картинок, а была палитра?
 
         // цвет/настройка скорости/
         JMenu colors = new JMenu("Change color");
@@ -41,7 +45,7 @@ public class ViewJMenu extends JMenu {
                 }
             });
 
-            c.setAccelerator(KeyStroke.getKeyStroke(String.valueOf(pictureCells.ordinal()+1)));
+            c.setAccelerator(KeyStroke.getKeyStroke(String.valueOf(pictureCells.ordinal() + 1)));
 
             colorGroup.add(c);
             colors.add(c);
@@ -49,24 +53,34 @@ public class ViewJMenu extends JMenu {
 
         this.addSeparator();
 
-        // TODO переделать и добавить KeyStroke
-        JMenuItem setSpeed = this.add(new JMenuItem("Speed", KeyEvent.VK_S));
-        setSpeed.addActionListener(e -> {
-            GameTimer timer = getTimer();
-            JSlider slider = new JSlider(SwingConstants.HORIZONTAL, 0, 1000, timer.getSpeed());
-            slider.setMajorTickSpacing(100);
-            slider.setPaintTicks(true);
-            slider.setSnapToTicks(true);
+        JMenu speed = new JMenu("Speed");
+        speed.setMnemonic(KeyEvent.VK_S);
+        this.add(speed);
 
-            slider.addChangeListener(changeEvent -> {
-                JSlider theSlider = (JSlider) changeEvent.getSource();
-                if (!theSlider.getValueIsAdjusting()) {
-                    timer.setSpeed(theSlider.getValue());
-                    timer.setReStartTimer(true);
-                }
-            });
-            JOptionPane.showMessageDialog(this, slider, "Set speed", JOptionPane.PLAIN_MESSAGE);
-        });
+        JMenuItem faster = this.add(new JMenuItem("Faster", KeyEvent.VK_F));
+        JMenuItem slower = this.add(new JMenuItem("Slower", KeyEvent.VK_S));
+        speed.add(faster);
+        speed.add(slower);
+
+        faster.addActionListener(e -> updateSpeed(faster, slower, -100, MAX_SPEED));
+        faster.setAccelerator(KeyStroke.getKeyStroke("ctrl P"));
+
+        slower.addActionListener(e -> updateSpeed(slower, faster, +100, MIN_SPEED));
+        slower.setAccelerator(KeyStroke.getKeyStroke("ctrl M"));
+    }
+
+    private void updateSpeed(JMenuItem first, JMenuItem second, int k, String message) {
+        GameTimer timer = getTimer();
+        first.setEnabled(timer.updateSpeed(k));
+        timer.setReStartTimer(true);
+
+        if (!second.isEnabled()) {
+            second.setEnabled(true);
+        }
+
+        if (!first.isEnabled()) {
+            JOptionPane.showMessageDialog(first, message, "Warning", JOptionPane.WARNING_MESSAGE);
+        }
     }
 
 }

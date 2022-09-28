@@ -8,6 +8,7 @@ import ru.life.component.menu.option.ViewJMenu;
 import static ru.life.constant.MenuOptions.*;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class MainMenuBar extends JMenuBar {
 
@@ -17,5 +18,6 @@ public class MainMenuBar extends JMenuBar {
         this.add(new ViewJMenu(VIEW.getOption()));
         this.add(new HelpJMenu(HELP.getOption()));
 
+        setBackground(Color.LIGHT_GRAY);
     }
 }

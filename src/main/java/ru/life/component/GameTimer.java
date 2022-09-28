@@ -13,4 +13,12 @@ public class GameTimer {
     private Timer timer;
     private boolean reStartTimer = false;
 
+    public boolean updateSpeed(int k) {
+        if ((speed >= 100 && k < 0) || (speed < 1000 && k > 0)) {
+            speed += k;
+            return true;
+        }
+        return false;
+    }
+
 }

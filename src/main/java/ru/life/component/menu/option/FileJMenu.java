@@ -2,6 +2,7 @@ package ru.life.component.menu.option;
 
 import javax.swing.*;
 import java.awt.event.KeyEvent;
+import java.io.File;
 
 public class FileJMenu extends JMenu {
 
@@ -13,8 +14,21 @@ public class FileJMenu extends JMenu {
 
     private void createButtons() {
         // тут должны быть общие возможности, открыть/закрыть/сохранить
-        this.add(new JMenuItem("Open", KeyEvent.VK_O)).setEnabled(false);
-        this.add(new JMenuItem("Save", KeyEvent.VK_S)).setEnabled(false);
+        JMenuItem open = this.add(new JMenuItem("Open", KeyEvent.VK_O));
+        open.addActionListener(e -> {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.showOpenDialog(this);
+            File file = fileChooser.getSelectedFile();
+        });
+        open.setAccelerator(KeyStroke.getKeyStroke("ctrl O"));
+
+
+        JMenuItem save = this.add(new JMenuItem("Save", KeyEvent.VK_S));
+        save.addActionListener((e -> {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.showSaveDialog(this);
+        }));
+        save.setEnabled(false);
         this.addSeparator();
 
         JMenuItem exit = this.add(new JMenuItem("Exit", KeyEvent.VK_E));

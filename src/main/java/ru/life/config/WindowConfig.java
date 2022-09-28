@@ -8,6 +8,8 @@ import ru.life.component.GameField;
 import ru.life.component.menu.MainMenuBar;
 
 import javax.swing.*;
+import javax.swing.plaf.metal.MetalLookAndFeel;
+import javax.swing.plaf.metal.OceanTheme;
 import java.awt.*;
 
 import static ru.life.constant.Size.FRAME_SIZE_HEIGHT;
@@ -37,6 +39,7 @@ public class WindowConfig {
             frame.setVisible(true);
             frame.setJMenuBar(new MainMenuBar());
             frame.revalidate();
+            frame.setResizable(false);
 
         });
     }

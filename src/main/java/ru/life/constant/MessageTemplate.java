@@ -1,7 +1,7 @@
 package ru.life.constant;
 
-public class HelpMessage {
-
+public class MessageTemplate {
+    // TODO сделать сообщение на английском и указать комбинации клавиш
     public static final String HELP_MESSAGE = "Правила:\n" +
             "\n" +
             "1) Место действия игры — размеченная на клетки плоскость, которая может быть безграничной, ограниченной, или замкнутой.\n\n" +
@@ -16,4 +16,6 @@ public class HelpMessage {
             "\n" +
             "Игрок расставляет начальную конфигурацию «живых» клеток, далее при нажатии на пробел запускается игра. Чтобы добавить новые клетки необходимо нажать пробел, далее добавить клетки и нажать пробел для продолжения.\n\n";
 
+    public static final String MAX_SPEED = "The maximum speed is already set. Speed up is not available.";
+    public static final String MIN_SPEED = "The minimum speed is already set. Speed down is not available.";
 }

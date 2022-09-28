@@ -5,7 +5,7 @@ import javax.swing.*;
 import java.awt.event.KeyEvent;
 
 import static ru.life.component.GameField.setPause;
-import static ru.life.constant.HelpMessage.HELP_MESSAGE;
+import static ru.life.constant.MessageTemplate.HELP_MESSAGE;
 
 public class HelpJMenu extends JMenu {
 
