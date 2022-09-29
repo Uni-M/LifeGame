@@ -2,18 +2,19 @@ package ru.life.component.menu.option;
 
 import ru.life.component.GameField;
 import ru.life.component.GameTimer;
-//import ru.life.constant.PictureCells;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
+import java.util.Arrays;
 
 import static ru.life.component.GameField.getTimer;
-//import static ru.life.component.GameField.setCellFileName;
-//import static ru.life.component.GameField.setReLoad;
+import static ru.life.component.GameField.setClean;
+import static ru.life.constant.MessageTemplate.CHANGE_SIZE;
 import static ru.life.constant.MessageTemplate.MAX_SPEED;
 import static ru.life.constant.MessageTemplate.MIN_SPEED;
+import static ru.life.constant.Size.DOT_SIZE;
 
 public class ViewJMenu extends JMenu {
 
@@ -24,41 +25,45 @@ public class ViewJMenu extends JMenu {
     }
 
     private void createButtons() {
-        // TODO изменить через Color color = JColorChooser.showDialog(this, "Choose color", Color.BLACK); ??
-        // переделать чтобы не было картинок, а была палитра?
 
-        // цвет/настройка скорости/
+        // цвет/настройка скорости/размер клетки
         JMenuItem color = new JMenuItem("Change color", KeyEvent.VK_O);
         this.add(color);
         color.addActionListener(e -> {
             Color c = JColorChooser.showDialog(this, "Choose color", Color.BLACK);
             GameField.setCol(c);
         });
+        color.setAccelerator(KeyStroke.getKeyStroke("ctrl C"));
 
-//        JMenu colors = new JMenu("Change color");
-//        colors.setMnemonic(KeyEvent.VK_C);
-//        this.add(colors);
-//        ButtonGroup colorGroup = new ButtonGroup();
-//
-//        for (PictureCells pictureCells : PictureCells.values()) {
-//            JRadioButtonMenuItem c = new JRadioButtonMenuItem(pictureCells.getColor());
-//
-//            if (pictureCells.name().equals(PictureCells.DEFAULT.name())) {
-//                c.setSelected(true);
-//            }
-//
-//            c.addItemListener(e -> {
-//                if (e.getStateChange() == ItemEvent.SELECTED) {
-//                    setCellFileName(pictureCells.getFileName());
-////                    setReLoad(true);
-//                }
-//            });
-//
-//            c.setAccelerator(KeyStroke.getKeyStroke(String.valueOf(pictureCells.ordinal() + 1)));
-//
-//            colorGroup.add(c);
-//            colors.add(c);
-//        }
+        // цвет/настройка скорости/размер клетки
+        JMenu size = new JMenu("Change size");
+        size.setMnemonic(KeyEvent.VK_C);
+        this.add(size);
+        ButtonGroup sizeGroup = new ButtonGroup();
+        Arrays.stream(new int[]{4, 8, 12, 16, 20}).forEach(i -> {
+                    JRadioButtonMenuItem s = new JRadioButtonMenuItem(i + "px");
+                    if (i == 8) {
+                        s.setSelected(true);
+                    }
+                    s.addItemListener(es -> {
+                        if (es.getStateChange() == ItemEvent.SELECTED) {
+                            int answer = JOptionPane.showConfirmDialog(s, CHANGE_SIZE, "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+                            if (answer == 0) {
+                                DOT_SIZE = i;
+                                setClean(true);
+                            } else {
+                                // TODO как обрабатывать если отказ от изменения размера?
+                            }
+                        }
+                    });
+
+                    s.setAccelerator(KeyStroke.getKeyStroke(String.valueOf(i / 4)));
+
+                    sizeGroup.add(s);
+                    size.add(s);
+                }
+        );
+
 
         this.addSeparator();
 

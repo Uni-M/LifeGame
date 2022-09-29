@@ -18,4 +18,5 @@ public class MessageTemplate {
 
     public static final String MAX_SPEED = "The maximum speed is already set. Speed up is not available.";
     public static final String MIN_SPEED = "The minimum speed is already set. Speed down is not available.";
+    public static final String CHANGE_SIZE = "When resizing, all existing cells will be destroyed! Confirm or cancel an action";
 }

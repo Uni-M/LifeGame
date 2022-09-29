@@ -84,14 +84,16 @@ public class GameField extends JPanel implements ActionListener {
         g2d.setPaint(col);
         for (int i = 0; i < SIZE_WIDTH / DOT_SIZE; i++) {
             for (int j = 0; j < SIZE_HEIGHT / DOT_SIZE; j++) {
-                if (!cells[i * DOT_SIZE][j * DOT_SIZE]) {
+                int x = i * DOT_SIZE;
+                int y = j * DOT_SIZE;
+                if (!cells[x][y]) {
 //                    g2d.draw3DRect(i*DOT_SIZE, j*DOT_SIZE, DOT_SIZE, DOT_SIZE, true);
-                    Rectangle2D rect = new Rectangle2D.Double(i*DOT_SIZE, j*DOT_SIZE, DOT_SIZE, DOT_SIZE);
+                    Rectangle2D rect = new Rectangle2D.Double(x, y, DOT_SIZE, DOT_SIZE);
                     g2d.draw(rect);
 //                    g2d.drawImage(emptyDot, i * DOT_SIZE, j * DOT_SIZE, this);
                 } else {
 //                    Rectangle rect = new Rectangle(i*DOT_SIZE, j*DOT_SIZE, DOT_SIZE, DOT_SIZE);
-                    Rectangle2D rect = new Rectangle2D.Double(i*DOT_SIZE, j*DOT_SIZE, DOT_SIZE, DOT_SIZE);
+                    Rectangle2D rect = new Rectangle2D.Double(x, y, DOT_SIZE, DOT_SIZE);
                     g2d.fill(rect);
 //                    g2d.draw(rect);
 
@@ -105,9 +107,11 @@ public class GameField extends JPanel implements ActionListener {
 
         clone(cellsTemp, cells);
 
-        for (int x = 1; x < (SIZE_WIDTH / DOT_SIZE) - 1; x++) {
-            for (int y = 1; y < (SIZE_HEIGHT / DOT_SIZE) - 1; y++) {
-                checkNeighbours(cells[x * DOT_SIZE][y * DOT_SIZE], x * DOT_SIZE, y * DOT_SIZE);
+        for (int i = 1; i < (SIZE_WIDTH / DOT_SIZE) - 1; i++) {
+            for (int j = 1; j < (SIZE_HEIGHT / DOT_SIZE) - 1; j++) {
+                int x = i * DOT_SIZE;
+                int y = j * DOT_SIZE;
+                checkNeighbours(cells[x][y], x, y);
             }
         }
 
@@ -116,9 +120,11 @@ public class GameField extends JPanel implements ActionListener {
 
     private void clone(boolean[][] to, boolean[][] from) {
 
-        for (int x = 0; x < (SIZE_WIDTH / DOT_SIZE); x++) {
-            for (int y = 0; y < (SIZE_HEIGHT / DOT_SIZE); y++) {
-                to[x * DOT_SIZE][y * DOT_SIZE] = from[x * DOT_SIZE][y * DOT_SIZE];
+        for (int i = 0; i < (SIZE_WIDTH / DOT_SIZE); i++) {
+            for (int j = 0; j < (SIZE_HEIGHT / DOT_SIZE); j++) {
+                int x = i * DOT_SIZE;
+                int y = j * DOT_SIZE;
+                to[x][y] = from[x][j * DOT_SIZE];
             }
         }
     }
@@ -161,11 +167,11 @@ public class GameField extends JPanel implements ActionListener {
         if (!pause && !clean && !step) {
             life();
 
-        } else if(pause && !clean && step) {
+        } else if (pause && !clean && step) {
             life();
             step = false;
 
-        } else if (clean){
+        } else if (clean) {
             clone(cells, new boolean[SIZE_WIDTH][SIZE_HEIGHT]);
             clean = false;
             pause = true;
