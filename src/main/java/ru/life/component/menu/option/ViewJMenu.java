@@ -1,15 +1,17 @@
 package ru.life.component.menu.option;
 
+import ru.life.component.GameField;
 import ru.life.component.GameTimer;
-import ru.life.constant.PictureCells;
+//import ru.life.constant.PictureCells;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
 
 import static ru.life.component.GameField.getTimer;
-import static ru.life.component.GameField.setCellFileName;
-import static ru.life.component.GameField.setReLoad;
+//import static ru.life.component.GameField.setCellFileName;
+//import static ru.life.component.GameField.setReLoad;
 import static ru.life.constant.MessageTemplate.MAX_SPEED;
 import static ru.life.constant.MessageTemplate.MIN_SPEED;
 
@@ -26,30 +28,37 @@ public class ViewJMenu extends JMenu {
         // переделать чтобы не было картинок, а была палитра?
 
         // цвет/настройка скорости/
-        JMenu colors = new JMenu("Change color");
-        colors.setMnemonic(KeyEvent.VK_C);
-        this.add(colors);
-        ButtonGroup colorGroup = new ButtonGroup();
+        JMenuItem color = new JMenuItem("Change color", KeyEvent.VK_O);
+        this.add(color);
+        color.addActionListener(e -> {
+            Color c = JColorChooser.showDialog(this, "Choose color", Color.BLACK);
+            GameField.setCol(c);
+        });
 
-        for (PictureCells pictureCells : PictureCells.values()) {
-            JRadioButtonMenuItem c = new JRadioButtonMenuItem(pictureCells.getColor());
-
-            if (pictureCells.name().equals(PictureCells.DEFAULT.name())) {
-                c.setSelected(true);
-            }
-
-            c.addItemListener(e -> {
-                if (e.getStateChange() == ItemEvent.SELECTED) {
-                    setCellFileName(pictureCells.getFileName());
-                    setReLoad(true);
-                }
-            });
-
-            c.setAccelerator(KeyStroke.getKeyStroke(String.valueOf(pictureCells.ordinal() + 1)));
-
-            colorGroup.add(c);
-            colors.add(c);
-        }
+//        JMenu colors = new JMenu("Change color");
+//        colors.setMnemonic(KeyEvent.VK_C);
+//        this.add(colors);
+//        ButtonGroup colorGroup = new ButtonGroup();
+//
+//        for (PictureCells pictureCells : PictureCells.values()) {
+//            JRadioButtonMenuItem c = new JRadioButtonMenuItem(pictureCells.getColor());
+//
+//            if (pictureCells.name().equals(PictureCells.DEFAULT.name())) {
+//                c.setSelected(true);
+//            }
+//
+//            c.addItemListener(e -> {
+//                if (e.getStateChange() == ItemEvent.SELECTED) {
+//                    setCellFileName(pictureCells.getFileName());
+////                    setReLoad(true);
+//                }
+//            });
+//
+//            c.setAccelerator(KeyStroke.getKeyStroke(String.valueOf(pictureCells.ordinal() + 1)));
+//
+//            colorGroup.add(c);
+//            colors.add(c);
+//        }
 
         this.addSeparator();
 

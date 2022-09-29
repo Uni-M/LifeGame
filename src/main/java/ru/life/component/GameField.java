@@ -1,13 +1,12 @@
 package ru.life.component;
 
-import ru.life.constant.PictureCells;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Rectangle2D;
 
 import static ru.life.constant.Size.DOT_SIZE;
 import static ru.life.constant.Size.SIZE_HEIGHT;
@@ -15,7 +14,6 @@ import static ru.life.constant.Size.SIZE_WIDTH;
 
 public class GameField extends JPanel implements ActionListener {
 
-    private Image dot;
     private Image emptyDot;
 
     private boolean[][] cells = new boolean[SIZE_WIDTH][SIZE_HEIGHT];
@@ -25,11 +23,14 @@ public class GameField extends JPanel implements ActionListener {
 
     private static boolean step = false;
     private static boolean clean = false;
-    private static boolean reLoad = false;
     private static boolean pause = true;
 
-    private static String cellFileName = PictureCells.DEFAULT.getFileName();
 
+    public static void setCol(Color col) {
+        GameField.col = col;
+    }
+
+    private static Color col;
 
     public GameField() {
         loadImages();
@@ -47,8 +48,8 @@ public class GameField extends JPanel implements ActionListener {
     }
 
     private void initGame() { // Старт при нажатии кнопки старт или энтер???
-        for (int i = 0; i < SIZE_WIDTH / 16; i++) {
-            for (int j = 0; j < SIZE_HEIGHT / 16; j++) {
+        for (int i = 0; i < SIZE_WIDTH / DOT_SIZE; i++) {
+            for (int j = 0; j < SIZE_HEIGHT / DOT_SIZE; j++) {
                 cells[i * DOT_SIZE][j * DOT_SIZE] = false;
             }
         }
@@ -59,16 +60,8 @@ public class GameField extends JPanel implements ActionListener {
 
     // Рисунки клеток
     private void loadImages() {
-        ImageIcon iid = new ImageIcon(cellFileName);
-        dot = iid.getImage();
         ImageIcon iie = new ImageIcon("src/main/resources/point.png");
         emptyDot = iie.getImage();
-
-    }
-
-    public void reLoadImages() {
-        ImageIcon iid = new ImageIcon(cellFileName);
-        dot = iid.getImage();
 
     }
 
@@ -77,10 +70,8 @@ public class GameField extends JPanel implements ActionListener {
         Graphics2D g2d = (Graphics2D) g;
         super.paintComponent(g2d);
 
-        if (reLoad) {
-            reLoadImages();
-            reLoad = !reLoad;
-        }
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
 
         if (timer.isReStartTimer()) {
             timer.getTimer().stop();
@@ -90,13 +81,20 @@ public class GameField extends JPanel implements ActionListener {
             t.start();
             timer.setReStartTimer(false);
         }
-
-        for (int i = 0; i < SIZE_WIDTH / 16; i++) {
-            for (int j = 0; j < SIZE_HEIGHT / 16; j++) {
+        g2d.setPaint(col);
+        for (int i = 0; i < SIZE_WIDTH / DOT_SIZE; i++) {
+            for (int j = 0; j < SIZE_HEIGHT / DOT_SIZE; j++) {
                 if (!cells[i * DOT_SIZE][j * DOT_SIZE]) {
-                    g2d.drawImage(emptyDot, i * DOT_SIZE, j * DOT_SIZE, this);
+//                    g2d.draw3DRect(i*DOT_SIZE, j*DOT_SIZE, DOT_SIZE, DOT_SIZE, true);
+                    Rectangle2D rect = new Rectangle2D.Double(i*DOT_SIZE, j*DOT_SIZE, DOT_SIZE, DOT_SIZE);
+                    g2d.draw(rect);
+//                    g2d.drawImage(emptyDot, i * DOT_SIZE, j * DOT_SIZE, this);
                 } else {
-                    g2d.drawImage(dot, i * DOT_SIZE, j * DOT_SIZE, this);
+//                    Rectangle rect = new Rectangle(i*DOT_SIZE, j*DOT_SIZE, DOT_SIZE, DOT_SIZE);
+                    Rectangle2D rect = new Rectangle2D.Double(i*DOT_SIZE, j*DOT_SIZE, DOT_SIZE, DOT_SIZE);
+                    g2d.fill(rect);
+//                    g2d.draw(rect);
+
                 }
             }
         }
@@ -107,8 +105,8 @@ public class GameField extends JPanel implements ActionListener {
 
         clone(cellsTemp, cells);
 
-        for (int x = 1; x < (SIZE_WIDTH / 16) - 1; x++) {
-            for (int y = 1; y < (SIZE_HEIGHT / 16) - 1; y++) {
+        for (int x = 1; x < (SIZE_WIDTH / DOT_SIZE) - 1; x++) {
+            for (int y = 1; y < (SIZE_HEIGHT / DOT_SIZE) - 1; y++) {
                 checkNeighbours(cells[x * DOT_SIZE][y * DOT_SIZE], x * DOT_SIZE, y * DOT_SIZE);
             }
         }
@@ -118,8 +116,8 @@ public class GameField extends JPanel implements ActionListener {
 
     private void clone(boolean[][] to, boolean[][] from) {
 
-        for (int x = 0; x < (SIZE_WIDTH / 16); x++) {
-            for (int y = 0; y < (SIZE_HEIGHT / 16); y++) {
+        for (int x = 0; x < (SIZE_WIDTH / DOT_SIZE); x++) {
+            for (int y = 0; y < (SIZE_HEIGHT / DOT_SIZE); y++) {
                 to[x * DOT_SIZE][y * DOT_SIZE] = from[x * DOT_SIZE][y * DOT_SIZE];
             }
         }
@@ -194,13 +192,6 @@ public class GameField extends JPanel implements ActionListener {
         }
     }
 
-    public static void setReLoad(boolean reLoad) {
-        GameField.reLoad = reLoad;
-    }
-
-    public static void setCellFileName(String cellFileName) {
-        GameField.cellFileName = cellFileName;
-    }
 
     public static void setPause(boolean pause) {
         GameField.pause = pause;
