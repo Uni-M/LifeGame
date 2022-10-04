@@ -17,7 +17,7 @@ public class GameField extends JPanel implements ActionListener {
     private Image emptyDot;
 
     private boolean[][] cells = new boolean[SIZE_WIDTH][SIZE_HEIGHT];
-    private boolean[][] cellsTemp = new boolean[SIZE_WIDTH][SIZE_HEIGHT];
+    private boolean[][] cellsTemp;
 
     private static final GameTimer timer = new GameTimer();
 
@@ -25,6 +25,10 @@ public class GameField extends JPanel implements ActionListener {
     private static boolean clean = false;
     private static boolean pause = true;
 
+    private static boolean resize = false;
+
+    private static int prevSize = DOT_SIZE;
+    private static double k = 1;
 
     public static void setCol(Color col) {
         GameField.col = col;
@@ -47,7 +51,7 @@ public class GameField extends JPanel implements ActionListener {
 
     }
 
-    private void initGame() { // Старт при нажатии кнопки старт или энтер???
+    private void initGame() {
         for (int i = 0; i < SIZE_WIDTH / DOT_SIZE; i++) {
             for (int j = 0; j < SIZE_HEIGHT / DOT_SIZE; j++) {
                 cells[i * DOT_SIZE][j * DOT_SIZE] = false;
@@ -66,7 +70,7 @@ public class GameField extends JPanel implements ActionListener {
     }
 
     @Override
-    protected void paintComponent(Graphics g) {
+    public void paintComponent(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
         super.paintComponent(g2d);
 
@@ -104,8 +108,7 @@ public class GameField extends JPanel implements ActionListener {
     }
 
     private void life() {
-
-        clone(cellsTemp, cells);
+        cellsTemp = new boolean[SIZE_WIDTH][SIZE_HEIGHT];
 
         for (int i = 1; i < (SIZE_WIDTH / DOT_SIZE) - 1; i++) {
             for (int j = 1; j < (SIZE_HEIGHT / DOT_SIZE) - 1; j++) {
@@ -124,7 +127,7 @@ public class GameField extends JPanel implements ActionListener {
             for (int j = 0; j < (SIZE_HEIGHT / DOT_SIZE); j++) {
                 int x = i * DOT_SIZE;
                 int y = j * DOT_SIZE;
-                to[x][y] = from[x][j * DOT_SIZE];
+                to[x][y] = from[x][y];
             }
         }
     }
@@ -167,7 +170,11 @@ public class GameField extends JPanel implements ActionListener {
         if (!pause && !clean && !step) {
             life();
 
-        } else if (pause && !clean && step) {
+        } else if (pause && !clean && !step && resize) {
+            resize();
+            resize = false;
+            pause = false;
+        } else if (pause && !clean && step && !resize) {
             life();
             step = false;
 
@@ -178,6 +185,27 @@ public class GameField extends JPanel implements ActionListener {
         }
 
         repaint(); //перерисовывает карту для обновления при движении
+    }
+
+    private void resize() {
+
+        cellsTemp = new boolean[SIZE_WIDTH][SIZE_HEIGHT];
+
+        for (int i = 1; i < SIZE_WIDTH / prevSize; i++) {
+            for (int j = 1; j < SIZE_HEIGHT / prevSize; j++) {
+                int x = i * prevSize;
+                int y = j * prevSize;
+                double displacement = Math.abs(k);
+
+                if (k < 0) {
+                    cellsTemp[(int) (x / displacement)][(int) (y / displacement)] = cells[x][y];
+                } else if (k >= 0 && (y * displacement < SIZE_HEIGHT) && (x * displacement < SIZE_WIDTH)) {
+                    cellsTemp[(int) (x * displacement)][(int) (y * displacement)] = cells[x][y];
+                }
+            }
+        }
+
+        clone(cells, cellsTemp);
     }
 
     private void click(MouseEvent e) {
@@ -219,5 +247,13 @@ public class GameField extends JPanel implements ActionListener {
         GameField.step = step;
     }
 
+    public static void setResize(boolean resize, int newSize) {
+        GameField.resize = resize;
+        k = newSize >= prevSize ? (double) newSize / prevSize : -1 * ((double) prevSize / newSize);
+    }
+
+    public static void setPrevSize(int prevSize) {
+        GameField.prevSize = prevSize;
+    }
 
 }

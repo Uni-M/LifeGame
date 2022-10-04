@@ -16,6 +16,13 @@ public class EditJMenu extends JMenu {
         createButtons();
     }
 
+    /**
+     * Adds main menu buttons to Edit.
+     * The buttons perform the following functions:
+     * - Start/Pause
+     * - Clean
+     * - Step forward
+     */
     private void createButtons() {
 
         // старт/Шаг вперед/шаг назад/пауза/

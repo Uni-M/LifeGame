@@ -3,13 +3,14 @@ package ru.life.config;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 import ru.life.component.GameField;
 import ru.life.component.menu.MainMenuBar;
+import ru.life.component.menu.option.FileJMenu;
 
 import javax.swing.*;
-import javax.swing.plaf.metal.MetalLookAndFeel;
-import javax.swing.plaf.metal.OceanTheme;
 import java.awt.*;
 
 import static ru.life.constant.Size.FRAME_SIZE_HEIGHT;

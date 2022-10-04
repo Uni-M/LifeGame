@@ -10,8 +10,9 @@ import java.awt.event.KeyEvent;
 import java.util.Arrays;
 
 import static ru.life.component.GameField.getTimer;
-import static ru.life.component.GameField.setClean;
-import static ru.life.constant.MessageTemplate.CHANGE_SIZE;
+import static ru.life.component.GameField.setPause;
+import static ru.life.component.GameField.setPrevSize;
+import static ru.life.component.GameField.setResize;
 import static ru.life.constant.MessageTemplate.MAX_SPEED;
 import static ru.life.constant.MessageTemplate.MIN_SPEED;
 import static ru.life.constant.Size.DOT_SIZE;
@@ -24,9 +25,15 @@ public class ViewJMenu extends JMenu {
         createButtons();
     }
 
+    /**
+     * Adds main menu buttons to Edit.
+     * The buttons perform the following functions:
+     * - Change color
+     * - Change size
+     * - Change Speed (with Faster and Slower options)
+     */
     private void createButtons() {
 
-        // цвет/настройка скорости/размер клетки
         JMenuItem color = new JMenuItem("Change color", KeyEvent.VK_O);
         this.add(color);
         color.addActionListener(e -> {
@@ -35,25 +42,22 @@ public class ViewJMenu extends JMenu {
         });
         color.setAccelerator(KeyStroke.getKeyStroke("ctrl C"));
 
-        // цвет/настройка скорости/размер клетки
+
         JMenu size = new JMenu("Change size");
         size.setMnemonic(KeyEvent.VK_C);
         this.add(size);
         ButtonGroup sizeGroup = new ButtonGroup();
-        Arrays.stream(new int[]{4, 8, 12, 16, 20}).forEach(i -> {
+        Arrays.stream(new int[]{4, 8, 16, 20}).forEach(i -> {
                     JRadioButtonMenuItem s = new JRadioButtonMenuItem(i + "px");
                     if (i == 8) {
                         s.setSelected(true);
                     }
                     s.addItemListener(es -> {
                         if (es.getStateChange() == ItemEvent.SELECTED) {
-                            int answer = JOptionPane.showConfirmDialog(s, CHANGE_SIZE, "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-                            if (answer == 0) {
-                                DOT_SIZE = i;
-                                setClean(true);
-                            } else {
-                                // TODO как обрабатывать если отказ от изменения размера?
-                            }
+                            setPause(true);
+                            setPrevSize(DOT_SIZE);
+                            setResize(true, i);
+                            DOT_SIZE = i;
                         }
                     });
 

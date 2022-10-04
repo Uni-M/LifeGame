@@ -15,9 +15,12 @@ public class HelpJMenu extends JMenu {
         createButtons();
     }
 
+    /**
+     * Adds main menu button to Help.
+     * Pressing the button opens a panel with information about the game (and hotkeys?)
+     */
     private void createButtons() {
 
-        // Новое окно с общей информацией, которую закрыть после прочтения можно
         JMenuItem help = this.add(new JMenuItem("Help", KeyEvent.VK_H));
 
         help.addActionListener(e -> {
