@@ -1,44 +1,50 @@
 package ru.life.component.menu.option;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import ru.life.component.GameField;
 import ru.life.component.GameTimer;
 
+import javax.annotation.PostConstruct;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
 
-import static ru.life.component.GameField.getTimer;
-import static ru.life.component.GameField.setPause;
-import static ru.life.component.GameField.setPrevSize;
-import static ru.life.component.GameField.setResize;
+import static ru.life.constant.MenuOptions.VIEW;
 import static ru.life.constant.MessageTemplate.MAX_SPEED;
 import static ru.life.constant.MessageTemplate.MIN_SPEED;
 import static ru.life.constant.Size.DOT_SIZE;
 
+/**
+ * Adds main menu buttons to Edit.
+ * The buttons perform the following functions:
+ * - Change color
+ * - Change size
+ * - Change Speed (with Faster and Slower options)
+ */
+@Component
+@RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class ViewJMenu extends JMenu {
 
-    public ViewJMenu(String s) {
-        super(s);
+    private final GameField gameField;
+
+    @PostConstruct
+    private void init() {
+        this.setText(VIEW.getOption());
         this.setMnemonic(KeyEvent.VK_V);
         createButtons();
     }
 
-    /**
-     * Adds main menu buttons to Edit.
-     * The buttons perform the following functions:
-     * - Change color
-     * - Change size
-     * - Change Speed (with Faster and Slower options)
-     */
     private void createButtons() {
 
         JMenuItem color = new JMenuItem("Change color", KeyEvent.VK_O);
         this.add(color);
         color.addActionListener(e -> {
             Color c = JColorChooser.showDialog(this, "Choose color", Color.BLACK);
-            GameField.setCol(c);
+            gameField.setCol(c);
         });
         color.setAccelerator(KeyStroke.getKeyStroke("ctrl C"));
 
@@ -54,9 +60,9 @@ public class ViewJMenu extends JMenu {
                     }
                     s.addItemListener(es -> {
                         if (es.getStateChange() == ItemEvent.SELECTED) {
-                            setPause(true);
-                            setPrevSize(DOT_SIZE);
-                            setResize(true, i);
+                            gameField.setPause(true);
+                            gameField.setPrevSize(DOT_SIZE);
+                            gameField.setResize(true, i);
                             DOT_SIZE = i;
                         }
                     });
@@ -88,7 +94,7 @@ public class ViewJMenu extends JMenu {
     }
 
     private void updateSpeed(JMenuItem first, JMenuItem second, int k, String message) {
-        GameTimer timer = getTimer();
+        GameTimer timer = gameField.getTimer();
         first.setEnabled(timer.updateSpeed(k));
         timer.setReStartTimer(true);
 

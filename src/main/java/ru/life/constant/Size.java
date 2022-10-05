@@ -2,7 +2,7 @@ package ru.life.constant;
 
 public class Size {
 
-    public static int DOT_SIZE = 8; // по дефолту 8
+    public static int DOT_SIZE = 8;
 
     public static final int SIZE_HEIGHT = 560;
     public static final int SIZE_WIDTH = 880;

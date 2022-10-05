@@ -1,7 +1,12 @@
 package ru.life.component.menu.option;
 
 import com.madgag.gif.fmsware.AnimatedGifEncoder;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import ru.life.component.GameField;
 
+import javax.annotation.PostConstruct;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.event.KeyEvent;
@@ -9,24 +14,30 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+import static ru.life.constant.MenuOptions.FILE;
 import static ru.life.constant.Size.SIZE_HEIGHT;
 import static ru.life.constant.Size.SIZE_WIDTH;
 
+/**
+ * Adds main menu buttons to File.
+ * The buttons perform the following functions:
+ * - Open
+ * - Save
+ * - Exit
+ */
+@Component
+@RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class FileJMenu extends JMenu {
 
-    public FileJMenu(String s) {
-        super(s);
+    private final GameField gameField;
+
+    @PostConstruct
+    private void init() {
+        this.setText(FILE.getOption());
         this.setMnemonic(KeyEvent.VK_F);
         createButtons();
     }
 
-    /**
-     * Adds main menu buttons to File.
-     * The buttons perform the following functions:
-     * - Open
-     * - Save
-     * - Exit
-     */
     private void createButtons() {
 
         JMenuItem open = this.add(new JMenuItem("Open", KeyEvent.VK_O));
@@ -66,15 +77,15 @@ public class FileJMenu extends JMenu {
                         JOptionPane.showMessageDialog(null, "Error: file name must end with \".png\".",
                                 null, JOptionPane.INFORMATION_MESSAGE);
                     } else {
-                            BufferedImage image = new BufferedImage(SIZE_WIDTH,
-                                    SIZE_HEIGHT, BufferedImage.TYPE_INT_RGB);
+                        BufferedImage image = new BufferedImage(SIZE_WIDTH,
+                                SIZE_HEIGHT, BufferedImage.TYPE_INT_RGB);
 //                            WindowConfig.getFrame().paint(image.createGraphics()); // TODO realize
-//                        gameField.paint(image.createGraphics());
-                       ImageIO.write(image, "png", new File(fileName));
-                        }
-                        JOptionPane.showMessageDialog(null, "Screen captured successfully.",
-                                null, JOptionPane.INFORMATION_MESSAGE);
-                    } catch (IOException ioException) {
+                        gameField.paint(image.createGraphics());
+                        ImageIO.write(image, "png", new File(fileName));
+                    }
+                    JOptionPane.showMessageDialog(null, "Screen captured successfully.",
+                            null, JOptionPane.INFORMATION_MESSAGE);
+                } catch (IOException ioException) {
                     ioException.printStackTrace();
                 }
             });
@@ -104,7 +115,7 @@ public class FileJMenu extends JMenu {
                             BufferedImage image = new BufferedImage(SIZE_WIDTH,
                                     SIZE_HEIGHT, BufferedImage.TYPE_INT_RGB);
 //                            WindowConfig.getFrame().paint(image.createGraphics());
-//                            gameField.paint(image.createGraphics());  // TODO realize
+                            gameField.paint(image.createGraphics());  // TODO realize
                             gifEncoder.addFrame(image);
                             Thread.sleep(500);
                         }

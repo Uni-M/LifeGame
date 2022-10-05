@@ -1,5 +1,10 @@
 package ru.life.component;
 
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -12,46 +17,29 @@ import static ru.life.constant.Size.DOT_SIZE;
 import static ru.life.constant.Size.SIZE_HEIGHT;
 import static ru.life.constant.Size.SIZE_WIDTH;
 
+@Getter
+@Setter
+@Component
 public class GameField extends JPanel implements ActionListener {
-
-    private Image emptyDot;
 
     private boolean[][] cells = new boolean[SIZE_WIDTH][SIZE_HEIGHT];
     private boolean[][] cellsTemp;
 
-    private static final GameTimer timer = new GameTimer();
+    private final GameTimer timer = new GameTimer();
 
-    private static boolean step = false;
-    private static boolean clean = false;
-    private static boolean pause = true;
+    private boolean step = false;
+    private boolean clean = false;
+    private boolean pause = true;
 
-    private static boolean resize = false;
+    private boolean resize = false;
 
-    private static int prevSize = DOT_SIZE;
-    private static double k = 1;
+    private int prevSize = DOT_SIZE;
+    private double k = 1;
+    private Color col;
 
-    public static void setCol(Color col) {
-        GameField.col = col;
-    }
-
-    private static Color col;
-
-    public GameField() {
-        loadImages();
-        initGame();
-        addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);
-                click(e);
-            }
-        });
-        setFocusable(true);
-        // TODO добавить выбор дефолтных комбинаций ?
-
-    }
-
+    @PostConstruct
     private void initGame() {
+
         for (int i = 0; i < SIZE_WIDTH / DOT_SIZE; i++) {
             for (int j = 0; j < SIZE_HEIGHT / DOT_SIZE; j++) {
                 cells[i * DOT_SIZE][j * DOT_SIZE] = false;
@@ -60,13 +48,15 @@ public class GameField extends JPanel implements ActionListener {
         Timer t = new Timer(timer.getSpeed(), this);
         timer.setTimer(t);
         t.start();
-    }
 
-    // Рисунки клеток
-    private void loadImages() {
-        ImageIcon iie = new ImageIcon("src/main/resources/point.png");
-        emptyDot = iie.getImage();
-
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                click(e);
+            }
+        });
+        setFocusable(true);
     }
 
     @Override
@@ -226,34 +216,13 @@ public class GameField extends JPanel implements ActionListener {
         }
     }
 
-
-    public static void setPause(boolean pause) {
-        GameField.pause = pause;
-    }
-
-    public static boolean getPause() {
-        return pause;
-    }
-
-    public static GameTimer getTimer() {
-        return timer;
-    }
-
-    public static void setClean(boolean clean) {
-        GameField.clean = clean;
-    }
-
-    public static void setStep(boolean step) {
-        GameField.step = step;
-    }
-
-    public static void setResize(boolean resize, int newSize) {
-        GameField.resize = resize;
+    public void setResize(boolean resize, int newSize) {
+        this.resize = resize;
         k = newSize >= prevSize ? (double) newSize / prevSize : -1 * ((double) prevSize / newSize);
     }
 
-    public static void setPrevSize(int prevSize) {
-        GameField.prevSize = prevSize;
+    public boolean getPause() {
+        return pause;
     }
 
 }
