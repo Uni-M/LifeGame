@@ -20,7 +20,8 @@ Faster - ctrl P
 Slower - ctrl M
 Help - ctrl H
 Open - ctrl O
-Save - 
+Save screenshot - ctrl F
+Save gif - ctrl G
 Exit - ESCAPE
 Start/Pause - SPACE
 Clean - ctrl Z

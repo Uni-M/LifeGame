@@ -9,6 +9,7 @@ import ru.life.component.GameField;
 import javax.annotation.PostConstruct;
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -66,32 +67,26 @@ public class FileJMenu extends JMenu {
         JMenu save = new JMenu("Save");
         save.setMnemonic(KeyEvent.VK_S);
         this.add(save);
+
         JMenuItem saveScreenshot = save.add(new JMenuItem("Save screenshot", KeyEvent.VK_S));
         saveScreenshot.addActionListener(e -> {
             Thread t = new Thread(() -> {
                 try {
-                    String fileName = JOptionPane.showInputDialog(null, "Save file",
-                            null, JOptionPane.INFORMATION_MESSAGE);
+                    String fileName = getPathToSave("png");
+                    BufferedImage image = new BufferedImage(SIZE_WIDTH,
+                            SIZE_HEIGHT, BufferedImage.TYPE_INT_RGB);
+                    gameField.paint(image.createGraphics());
+                    ImageIO.write(image, "png", new File(fileName));
 
-                    if (!fileName.toLowerCase().endsWith(".png")) {
-                        JOptionPane.showMessageDialog(null, "Error: file name must end with \".png\".",
-                                null, JOptionPane.INFORMATION_MESSAGE);
-                    } else {
-                        BufferedImage image = new BufferedImage(SIZE_WIDTH,
-                                SIZE_HEIGHT, BufferedImage.TYPE_INT_RGB);
-//                            WindowConfig.getFrame().paint(image.createGraphics()); // TODO realize
-                        gameField.paint(image.createGraphics());
-                        ImageIO.write(image, "png", new File(fileName));
-                    }
                     JOptionPane.showMessageDialog(null, "Screen captured successfully.",
                             null, JOptionPane.INFORMATION_MESSAGE);
                 } catch (IOException ioException) {
-                    ioException.printStackTrace();
+                    ioException.printStackTrace(); // TODO change
                 }
             });
             t.start();
-
         });
+        saveScreenshot.setAccelerator(KeyStroke.getKeyStroke("ctrl O"));
 
 
         JMenuItem saveGif = save.add(new JMenuItem("Save gif", KeyEvent.VK_G));
@@ -101,40 +96,60 @@ public class FileJMenu extends JMenu {
                 AnimatedGifEncoder gifEncoder = new AnimatedGifEncoder();
 
                 try {
-                    String fileName = JOptionPane.showInputDialog(null, "Save file",
-                            null, JOptionPane.INFORMATION_MESSAGE);
+                    String fileName = getPathToSave("gif");
+
                     gifEncoder.start(fileName);
                     gifEncoder.setDelay(500);   // 1 frame per 1/2 sec
                     gifEncoder.setRepeat(10);
 
-                    if (!fileName.toLowerCase().endsWith(".gif")) {
-                        JOptionPane.showMessageDialog(null, "Error: file name must end with \".gif\".",
-                                null, JOptionPane.INFORMATION_MESSAGE);
-                    } else {
-                        for (int i = 0; i < 10; i++) {
-                            BufferedImage image = new BufferedImage(SIZE_WIDTH,
-                                    SIZE_HEIGHT, BufferedImage.TYPE_INT_RGB);
-//                            WindowConfig.getFrame().paint(image.createGraphics());
-                            gameField.paint(image.createGraphics());  // TODO realize
-                            gifEncoder.addFrame(image);
-                            Thread.sleep(500);
-                        }
-                        gifEncoder.finish();
-                        JOptionPane.showMessageDialog(null, "Screen captured successfully.",
-                                null, JOptionPane.INFORMATION_MESSAGE);
+                    for (int i = 0; i < 10; i++) {
+                        BufferedImage image = new BufferedImage(SIZE_WIDTH, SIZE_HEIGHT,
+                                BufferedImage.TYPE_INT_RGB);
+                        gameField.paint(image.createGraphics());
+                        gifEncoder.addFrame(image);
+                        Thread.sleep(500);
                     }
+                    gifEncoder.finish();
+                    JOptionPane.showMessageDialog(null, "Screen captured successfully.",
+                            null, JOptionPane.INFORMATION_MESSAGE);
+
                 } catch (Exception ex) {
+                    //TODO add logic
                 }
             });
             t.start();
 
         });
+        saveGif.setAccelerator(KeyStroke.getKeyStroke("ctrl G"));
+
 
         this.addSeparator();
 
         JMenuItem exit = this.add(new JMenuItem("Exit", KeyEvent.VK_E));
         exit.addActionListener(e -> System.exit(0));
         exit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0));
+    }
+
+
+    private String getPathToSave(String type) {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setAcceptAllFileFilterUsed(false);
+
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(type, type);
+        fileChooser.addChoosableFileFilter(filter);
+
+        int retVal = fileChooser.showSaveDialog(this);
+        if (retVal == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            String fileName = file.getAbsolutePath();
+
+            if (!fileName.toLowerCase().endsWith("." + type)) {
+                fileName = fileName.concat("." + type);
+            }
+            return fileName;
+        }
+
+        return null;
     }
 
 }
