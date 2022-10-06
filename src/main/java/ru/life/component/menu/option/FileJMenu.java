@@ -139,6 +139,7 @@ public class FileJMenu extends JMenu {
                             SAVING_TITLE, JOptionPane.INFORMATION_MESSAGE);
 
                 } catch (Exception ex) {
+                    log.error("Fail save gif", ex);
                     JOptionPane.showMessageDialog(save, SAVING_FAILED,
                             SAVING_TITLE, JOptionPane.ERROR_MESSAGE);
                 }
