@@ -81,18 +81,15 @@ public class GameField extends JPanel implements ActionListener {
             for (int j = 0; j < SIZE_HEIGHT / DOT_SIZE; j++) {
                 int x = i * DOT_SIZE;
                 int y = j * DOT_SIZE;
-                if (!cells[x][y]) {
-//                    g2d.draw3DRect(i*DOT_SIZE, j*DOT_SIZE, DOT_SIZE, DOT_SIZE, true);
-                    Rectangle2D rect = new Rectangle2D.Double(x, y, DOT_SIZE, DOT_SIZE);
-                    g2d.draw(rect);
-//                    g2d.drawImage(emptyDot, i * DOT_SIZE, j * DOT_SIZE, this);
-                } else {
-//                    Rectangle rect = new Rectangle(i*DOT_SIZE, j*DOT_SIZE, DOT_SIZE, DOT_SIZE);
-                    Rectangle2D rect = new Rectangle2D.Double(x, y, DOT_SIZE, DOT_SIZE);
-                    g2d.fill(rect);
-//                    g2d.draw(rect);
 
+                if (cells[x][y]) {
+                    g2d.drawRect(i * DOT_SIZE, j * DOT_SIZE, DOT_SIZE, DOT_SIZE);
+                    g2d.setColor(col);
+                    g2d.fillRect(i * DOT_SIZE, j * DOT_SIZE, DOT_SIZE, DOT_SIZE);
                 }
+
+                g2d.setColor(Color.BLACK);
+                g2d.drawRect(i * DOT_SIZE, j * DOT_SIZE, DOT_SIZE, DOT_SIZE);
             }
         }
 
