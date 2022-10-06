@@ -32,14 +32,17 @@ public class HelpJMenu extends JMenu {
     private void createButtons() {
 
         JMenuItem help = this.add(new JMenuItem("Help", KeyEvent.VK_H));
-
         help.addActionListener(e -> {
-            gameField.setPause(true);
-            JScrollPane scrollPane = new JScrollPane(createText());
-            JOptionPane.showMessageDialog(this,
-                    scrollPane,
-                    "Game rules",
-                    JOptionPane.PLAIN_MESSAGE);
+
+            Thread t = new Thread(() -> {
+                gameField.setPause(true);
+                JScrollPane scrollPane = new JScrollPane(createText());
+                JOptionPane.showMessageDialog(this,
+                        scrollPane,
+                        "Game rules",
+                        JOptionPane.PLAIN_MESSAGE);
+            });
+            t.start();
         });
         help.setAccelerator(KeyStroke.getKeyStroke("ctrl H"));
     }

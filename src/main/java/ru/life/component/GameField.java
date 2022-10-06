@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
+import java.util.Arrays;
 
 import static ru.life.constant.Size.DOT_SIZE;
 import static ru.life.constant.Size.SIZE_HEIGHT;

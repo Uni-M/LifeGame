@@ -43,8 +43,12 @@ public class ViewJMenu extends JMenu {
         JMenuItem color = new JMenuItem("Change color", KeyEvent.VK_O);
         this.add(color);
         color.addActionListener(e -> {
-            Color c = JColorChooser.showDialog(this, "Choose color", Color.BLACK);
-            gameField.setCol(c);
+
+            Thread t = new Thread(() -> {
+                Color c = JColorChooser.showDialog(this, "Choose color", Color.BLACK);
+                gameField.setCol(c);
+            });
+            t.start();
         });
         color.setAccelerator(KeyStroke.getKeyStroke("ctrl C"));
 

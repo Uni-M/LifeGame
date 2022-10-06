@@ -18,5 +18,7 @@ public class MessageTemplate {
 
     public static final String MAX_SPEED = "The maximum speed is already set. Speed up is not available.";
     public static final String MIN_SPEED = "The minimum speed is already set. Speed down is not available.";
-
+    public static final String SAVED_SUCCESS = "Screen captured successfully.";
+    public static final String SAVING_FAILED = "Screen capturing was failed. Please check chosen directory and file name.";
+    public static final String SAVING_TITLE = "Saving";
 }

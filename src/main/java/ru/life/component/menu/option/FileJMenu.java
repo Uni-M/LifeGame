@@ -2,6 +2,7 @@ package ru.life.component.menu.option;
 
 import com.madgag.gif.fmsware.AnimatedGifEncoder;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.life.component.GameField;
@@ -16,6 +17,9 @@ import java.io.File;
 import java.io.IOException;
 
 import static ru.life.constant.MenuOptions.FILE;
+import static ru.life.constant.MessageTemplate.SAVED_SUCCESS;
+import static ru.life.constant.MessageTemplate.SAVING_FAILED;
+import static ru.life.constant.MessageTemplate.SAVING_TITLE;
 import static ru.life.constant.Size.SIZE_HEIGHT;
 import static ru.life.constant.Size.SIZE_WIDTH;
 
@@ -26,6 +30,7 @@ import static ru.life.constant.Size.SIZE_WIDTH;
  * - Save
  * - Exit
  */
+@Slf4j
 @Component
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class FileJMenu extends JMenu {
@@ -41,8 +46,24 @@ public class FileJMenu extends JMenu {
 
     private void createButtons() {
 
+        createOpenMenuItem();
+
+        JMenu save = new JMenu("Save");
+        save.setMnemonic(KeyEvent.VK_S);
+        this.add(save);
+
+        createSaveScreenshotMenuItem(save);
+        createSaveGifMenuItem(save);
+        this.addSeparator();
+
+        createExitMenuItem();
+
+    }
+
+    private void createOpenMenuItem() {
         JMenuItem open = this.add(new JMenuItem("Open", KeyEvent.VK_O));
         open.addActionListener(e -> {
+
             Thread t = new Thread(() -> {
                 JFileChooser fileChooser = new JFileChooser();
                 int result = fileChooser.showOpenDialog(this);
@@ -63,73 +84,76 @@ public class FileJMenu extends JMenu {
             t.start();
         });
         open.setAccelerator(KeyStroke.getKeyStroke("ctrl O"));
+    }
 
-        JMenu save = new JMenu("Save");
-        save.setMnemonic(KeyEvent.VK_S);
-        this.add(save);
-
-        JMenuItem saveScreenshot = save.add(new JMenuItem("Save screenshot", KeyEvent.VK_S));
+    private void createSaveScreenshotMenuItem(JMenu save) {
+        JMenuItem saveScreenshot = save.add(new JMenuItem("Saving screenshot", KeyEvent.VK_S));
         saveScreenshot.addActionListener(e -> {
+
             Thread t = new Thread(() -> {
                 try {
                     String fileName = getPathToSave("png");
-                    BufferedImage image = new BufferedImage(SIZE_WIDTH,
-                            SIZE_HEIGHT, BufferedImage.TYPE_INT_RGB);
+                    BufferedImage image = new BufferedImage(SIZE_WIDTH, SIZE_HEIGHT,
+                            BufferedImage.TYPE_INT_RGB);
                     gameField.paint(image.createGraphics());
+
                     ImageIO.write(image, "png", new File(fileName));
 
-                    JOptionPane.showMessageDialog(null, "Screen captured successfully.",
-                            null, JOptionPane.INFORMATION_MESSAGE);
-                } catch (IOException ioException) {
-                    ioException.printStackTrace(); // TODO change
+                    JOptionPane.showMessageDialog(save, SAVED_SUCCESS,
+                            SAVING_TITLE, JOptionPane.INFORMATION_MESSAGE);
+                } catch (IOException ex) {
+                    log.error("Fail save screenshot", ex);
+                    JOptionPane.showMessageDialog(save, SAVING_FAILED,
+                            SAVING_TITLE, JOptionPane.ERROR_MESSAGE);
                 }
             });
             t.start();
         });
         saveScreenshot.setAccelerator(KeyStroke.getKeyStroke("ctrl O"));
+    }
 
-
+    private void createSaveGifMenuItem(JMenu save) {
         JMenuItem saveGif = save.add(new JMenuItem("Save gif", KeyEvent.VK_G));
         saveGif.addActionListener(e -> {
 
             Thread t = new Thread(() -> {
                 AnimatedGifEncoder gifEncoder = new AnimatedGifEncoder();
-
                 try {
                     String fileName = getPathToSave("gif");
+                    int screenshotSpeed = gameField.getTimer().getSpeed();
 
                     gifEncoder.start(fileName);
-                    gifEncoder.setDelay(500);   // 1 frame per 1/2 sec
-                    gifEncoder.setRepeat(10);
+                    gifEncoder.setDelay(screenshotSpeed);
+                    gifEncoder.setRepeat(20);
 
-                    for (int i = 0; i < 10; i++) {
+                    // TODO добавить запрос количества шагов?
+                    for (int i = 0; i < 30; i++) {
                         BufferedImage image = new BufferedImage(SIZE_WIDTH, SIZE_HEIGHT,
                                 BufferedImage.TYPE_INT_RGB);
                         gameField.paint(image.createGraphics());
                         gifEncoder.addFrame(image);
-                        Thread.sleep(500);
+                        Thread.sleep(screenshotSpeed);
                     }
                     gifEncoder.finish();
-                    JOptionPane.showMessageDialog(null, "Screen captured successfully.",
-                            null, JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(save, SAVED_SUCCESS,
+                            SAVING_TITLE, JOptionPane.INFORMATION_MESSAGE);
 
                 } catch (Exception ex) {
-                    //TODO add logic
+                    JOptionPane.showMessageDialog(save, SAVING_FAILED,
+                            SAVING_TITLE, JOptionPane.ERROR_MESSAGE);
                 }
             });
             t.start();
 
         });
         saveGif.setAccelerator(KeyStroke.getKeyStroke("ctrl G"));
+    }
 
-
-        this.addSeparator();
-
+    private void createExitMenuItem() {
         JMenuItem exit = this.add(new JMenuItem("Exit", KeyEvent.VK_E));
         exit.addActionListener(e -> System.exit(0));
         exit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0));
     }
-
 
     private String getPathToSave(String type) {
         JFileChooser fileChooser = new JFileChooser();
@@ -138,8 +162,8 @@ public class FileJMenu extends JMenu {
         FileNameExtensionFilter filter = new FileNameExtensionFilter(type, type);
         fileChooser.addChoosableFileFilter(filter);
 
-        int retVal = fileChooser.showSaveDialog(this);
-        if (retVal == JFileChooser.APPROVE_OPTION) {
+        int result = fileChooser.showSaveDialog(this);
+        if (result == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();
             String fileName = file.getAbsolutePath();
 
