@@ -1,72 +1,114 @@
 package ru.life.component.menu.option;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import ru.life.component.GameField;
 import ru.life.component.GameTimer;
-import ru.life.constant.PictureCells;
 
+import javax.annotation.PostConstruct;
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
+import java.util.Arrays;
 
-import static ru.life.component.GameField.getTimer;
-import static ru.life.component.GameField.setCellFileName;
-import static ru.life.component.GameField.setReLoad;
+import static ru.life.constant.MenuOptions.VIEW;
+import static ru.life.constant.MessageTemplate.MAX_SPEED;
+import static ru.life.constant.MessageTemplate.MIN_SPEED;
+import static ru.life.constant.Size.DOT_SIZE;
 
+/**
+ * Adds main menu buttons to Edit.
+ * The buttons perform the following functions:
+ * - Change color
+ * - Change size
+ * - Change Speed (with Faster and Slower options)
+ */
+@Component
+@RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class ViewJMenu extends JMenu {
 
-    public ViewJMenu(String s) {
-        super(s);
+    private final GameField gameField;
+
+    @PostConstruct
+    private void init() {
+        this.setText(VIEW.getOption());
         this.setMnemonic(KeyEvent.VK_V);
         createButtons();
     }
 
     private void createButtons() {
 
-        // цвет/настройка скорости/
-        JMenu colors = new JMenu("Change color");
-        colors.setMnemonic(KeyEvent.VK_C);
-        this.add(colors);
-        ButtonGroup colorGroup = new ButtonGroup();
+        JMenuItem color = new JMenuItem("Change color", KeyEvent.VK_O);
+        this.add(color);
+        color.addActionListener(e -> {
 
-        for (PictureCells pictureCells : PictureCells.values()) {
-            JRadioButtonMenuItem c = new JRadioButtonMenuItem(pictureCells.getColor());
-
-            if (pictureCells.name().equals(PictureCells.DEFAULT.name())) {
-                c.setSelected(true);
-            }
-
-            c.addItemListener(e -> {
-                if (e.getStateChange() == ItemEvent.SELECTED) {
-                    setCellFileName(pictureCells.getFileName());
-                    setReLoad(true);
-                }
+            Thread t = new Thread(() -> {
+                Color c = JColorChooser.showDialog(this, "Choose color", Color.BLACK);
+                gameField.setCol(c);
             });
+            t.start();
+        });
+        color.setAccelerator(KeyStroke.getKeyStroke("ctrl C"));
 
-            c.setAccelerator(KeyStroke.getKeyStroke(String.valueOf(pictureCells.ordinal()+1)));
 
-            colorGroup.add(c);
-            colors.add(c);
-        }
+        JMenu size = new JMenu("Change size");
+        size.setMnemonic(KeyEvent.VK_C);
+        this.add(size);
+        ButtonGroup sizeGroup = new ButtonGroup();
+        Arrays.stream(new int[]{4, 8, 16, 20}).forEach(i -> {
+                    JRadioButtonMenuItem s = new JRadioButtonMenuItem(i + "px");
+                    if (i == 8) {
+                        s.setSelected(true);
+                    }
+                    s.addItemListener(es -> {
+                        if (es.getStateChange() == ItemEvent.SELECTED) {
+                            gameField.setPause(true);
+                            gameField.setPrevSize(DOT_SIZE);
+                            gameField.setResize(true, i);
+                            DOT_SIZE = i;
+                        }
+                    });
+
+                    s.setAccelerator(KeyStroke.getKeyStroke(String.valueOf(i / 4)));
+
+                    sizeGroup.add(s);
+                    size.add(s);
+                }
+        );
+
 
         this.addSeparator();
 
-        // TODO переделать и добавить KeyStroke
-        JMenuItem setSpeed = this.add(new JMenuItem("Speed", KeyEvent.VK_S));
-        setSpeed.addActionListener(e -> {
-            GameTimer timer = getTimer();
-            JSlider slider = new JSlider(SwingConstants.HORIZONTAL, 0, 1000, timer.getSpeed());
-            slider.setMajorTickSpacing(100);
-            slider.setPaintTicks(true);
-            slider.setSnapToTicks(true);
+        JMenu speed = new JMenu("Speed");
+        speed.setMnemonic(KeyEvent.VK_S);
+        this.add(speed);
 
-            slider.addChangeListener(changeEvent -> {
-                JSlider theSlider = (JSlider) changeEvent.getSource();
-                if (!theSlider.getValueIsAdjusting()) {
-                    timer.setSpeed(theSlider.getValue());
-                    timer.setReStartTimer(true);
-                }
-            });
-            JOptionPane.showMessageDialog(this, slider, "Set speed", JOptionPane.PLAIN_MESSAGE);
-        });
+        JMenuItem faster = this.add(new JMenuItem("Faster", KeyEvent.VK_F));
+        JMenuItem slower = this.add(new JMenuItem("Slower", KeyEvent.VK_S));
+        speed.add(faster);
+        speed.add(slower);
+
+        faster.addActionListener(e -> updateSpeed(faster, slower, -100, MAX_SPEED));
+        faster.setAccelerator(KeyStroke.getKeyStroke("ctrl P"));
+
+        slower.addActionListener(e -> updateSpeed(slower, faster, +100, MIN_SPEED));
+        slower.setAccelerator(KeyStroke.getKeyStroke("ctrl M"));
+    }
+
+    private void updateSpeed(JMenuItem first, JMenuItem second, int k, String message) {
+        GameTimer timer = gameField.getTimer();
+        first.setEnabled(timer.updateSpeed(k));
+        timer.setReStartTimer(true);
+
+        if (!second.isEnabled()) {
+            second.setEnabled(true);
+        }
+
+        if (!first.isEnabled()) {
+            JOptionPane.showMessageDialog(first, message, "Warning", JOptionPane.WARNING_MESSAGE);
+        }
     }
 
 }
