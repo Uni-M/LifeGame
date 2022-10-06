@@ -12,17 +12,4 @@
 
 Игрок расставляет начальную конфигурацию «живых» клеток, далее при нажатии на enter запускается игра. Чтобы добавить новые клетки необходимо нажать esc, далее добавить клетки и нажать enter для продолжения.
 
-Сочетания клавиш:
-
-Change color - ctrl С
-Change size - 1, 2, 3, 4, 5
-Faster - ctrl P
-Slower - ctrl M
-Help - ctrl H
-Open - ctrl O
-Save screenshot - ctrl F
-Save gif - ctrl G
-Exit - ESCAPE
-Start/Pause - SPACE
-Clean - ctrl Z
-Step forward - ctrl S
+![screenshot](https://user-images.githubusercontent.com/61387671/194316697-9ce7f322-e9dd-49ed-a212-bae7664c3cde.png)
