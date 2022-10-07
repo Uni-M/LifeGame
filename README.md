@@ -12,4 +12,7 @@
 
 Игрок расставляет начальную конфигурацию «живых» клеток, далее при нажатии на enter запускается игра. Чтобы добавить новые клетки необходимо нажать esc, далее добавить клетки и нажать enter для продолжения.
 
-![screenshot](https://user-images.githubusercontent.com/61387671/194316697-9ce7f322-e9dd-49ed-a212-bae7664c3cde.png)
+![giff](https://user-images.githubusercontent.com/61387671/194599158-394b8997-c6fc-4094-8612-e3ce0ac9b9e8.gif)
+
+![scr](https://user-images.githubusercontent.com/61387671/194599180-93e68b4b-ccb8-4c5e-bce3-e5bd3725a78d.png)
+
