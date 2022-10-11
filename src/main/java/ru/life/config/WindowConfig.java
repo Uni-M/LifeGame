@@ -39,7 +39,6 @@ public class WindowConfig {
                     FRAME_SIZE_HEIGHT);
             frame.add(gameField);
             frame.setVisible(true);
-            mainMenuBar.init();
             frame.setJMenuBar(mainMenuBar);
             frame.revalidate();
             frame.setResizable(false);

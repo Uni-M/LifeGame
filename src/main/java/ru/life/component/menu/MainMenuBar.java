@@ -8,6 +8,7 @@ import ru.life.component.menu.option.FileJMenu;
 import ru.life.component.menu.option.HelpJMenu;
 import ru.life.component.menu.option.ViewJMenu;
 
+import javax.annotation.PostConstruct;
 import javax.swing.*;
 import java.util.List;
 import java.awt.*;
@@ -18,6 +19,7 @@ public class MainMenuBar extends JMenuBar {
 
     private final List<? extends JMenu> jMenus;
 
+    @PostConstruct
     public void init() {
         jMenus.forEach(this::add);
         setBackground(Color.LIGHT_GRAY);
