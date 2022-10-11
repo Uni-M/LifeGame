@@ -2,6 +2,7 @@ package ru.life.component.menu.option;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import ru.life.component.GameField;
 
@@ -17,6 +18,7 @@ import static ru.life.constant.MessageTemplate.HELP_MESSAGE;
  * Pressing the button opens a panel with information about the game (and hotkeys?)
  */
 @Component
+@Order(4)
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class HelpJMenu extends JMenu {
 

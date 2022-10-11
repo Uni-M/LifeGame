@@ -4,6 +4,7 @@ import com.madgag.gif.fmsware.AnimatedGifEncoder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import ru.life.component.GameField;
 
@@ -32,6 +33,7 @@ import static ru.life.constant.Size.SIZE_WIDTH;
  */
 @Slf4j
 @Component
+@Order(1)
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class FileJMenu extends JMenu {
 

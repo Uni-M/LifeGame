@@ -2,6 +2,7 @@ package ru.life.component.menu.option;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import ru.life.component.GameField;
 import ru.life.component.GameTimer;
@@ -26,6 +27,7 @@ import static ru.life.constant.Size.DOT_SIZE;
  * - Change Speed (with Faster and Slower options)
  */
 @Component
+@Order(3)
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class ViewJMenu extends JMenu {
 

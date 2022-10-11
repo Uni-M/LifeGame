@@ -2,6 +2,7 @@ package ru.life.component.menu.option;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import ru.life.component.GameField;
 
@@ -19,6 +20,7 @@ import static ru.life.constant.MenuOptions.EDIT;
  * - Step forward
  */
 @Component
+@Order(2)
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class EditJMenu extends JMenu {
 

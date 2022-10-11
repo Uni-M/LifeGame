@@ -9,23 +9,17 @@ import ru.life.component.menu.option.HelpJMenu;
 import ru.life.component.menu.option.ViewJMenu;
 
 import javax.swing.*;
+import java.util.List;
 import java.awt.*;
 
 @Component
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class MainMenuBar extends JMenuBar {
 
-    private final FileJMenu fileJMenu;
-    private final EditJMenu editJMenu;
-    private final ViewJMenu viewJMenu;
-    private final HelpJMenu helpJMenu;
+    private final List<? extends JMenu> jMenus;
 
     public void init() {
-        this.add(fileJMenu);
-        this.add(editJMenu);
-        this.add(viewJMenu);
-        this.add(helpJMenu);
-
+        jMenus.forEach(this::add);
         setBackground(Color.LIGHT_GRAY);
     }
 
