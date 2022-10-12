@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import ru.life.component.GameField;
 
 import javax.annotation.PostConstruct;
 import javax.swing.*;
@@ -22,8 +21,6 @@ import static ru.life.constant.MessageTemplate.HELP_MESSAGE;
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class HelpJMenu extends JMenu {
 
-    private final GameField gameField;
-
     @PostConstruct
     private void init() {
         this.setText(HELP.getOption());
@@ -37,7 +34,6 @@ public class HelpJMenu extends JMenu {
         help.addActionListener(e -> {
 
             Thread t = new Thread(() -> {
-                gameField.setPause(true);
                 JScrollPane scrollPane = new JScrollPane(createText());
                 JOptionPane.showMessageDialog(this,
                         scrollPane,

@@ -1,8 +1,11 @@
 package ru.life.component;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import ru.life.constant.GameState;
 
 import javax.annotation.PostConstruct;
 import javax.swing.*;
@@ -11,8 +14,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.geom.Rectangle2D;
-import java.util.Arrays;
 
 import static ru.life.constant.Size.DOT_SIZE;
 import static ru.life.constant.Size.SIZE_HEIGHT;
@@ -21,18 +22,14 @@ import static ru.life.constant.Size.SIZE_WIDTH;
 @Getter
 @Setter
 @Component
+@RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class GameField extends JPanel implements ActionListener {
 
     private boolean[][] cells = new boolean[SIZE_WIDTH][SIZE_HEIGHT];
     private boolean[][] cellsTemp;
 
-    private final GameTimer timer = new GameTimer();
-
-    private boolean step = false;
-    private boolean clean = false;
-    private boolean pause = true;
-
-    private boolean resize = false;
+    private final GameTimer timer;
+    private GameState state;
 
     private int prevSize = DOT_SIZE;
     private double k = 1;
@@ -41,14 +38,8 @@ public class GameField extends JPanel implements ActionListener {
     @PostConstruct
     private void initGame() {
 
-        for (int i = 0; i < SIZE_WIDTH / DOT_SIZE; i++) {
-            for (int j = 0; j < SIZE_HEIGHT / DOT_SIZE; j++) {
-                cells[i * DOT_SIZE][j * DOT_SIZE] = false;
-            }
-        }
-        Timer t = new Timer(timer.getSpeed(), this);
-        timer.setTimer(t);
-        t.start();
+        state = GameState.PAUSE;
+        timer.init(this);
 
         addMouseListener(new MouseAdapter() {
             @Override
@@ -154,22 +145,20 @@ public class GameField extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) { //события которые происходят когда тикает таймер
 
-        // TODO заменить на statemachine
-        if (!pause && !clean && !step) {
-            life();
-
-        } else if (pause && !clean && !step && resize) {
-            resize();
-            resize = false;
-            pause = false;
-        } else if (pause && !clean && step && !resize) {
-            life();
-            step = false;
-
-        } else if (clean) {
-            clone(cells, new boolean[SIZE_WIDTH][SIZE_HEIGHT]);
-            clean = false;
-            pause = true;
+        switch (state) {
+            case RESIZE -> {
+                resize();
+                state = state.nextState();
+            }
+            case STEP -> {
+                life();
+                state = state.nextState();
+            }
+            case CLEAN -> {
+                clone(cells, new boolean[SIZE_WIDTH][SIZE_HEIGHT]);
+                state = state.nextState();
+            }
+            case LIFE -> life();
         }
 
         repaint(); //перерисовывает карту для обновления при движении
@@ -197,7 +186,7 @@ public class GameField extends JPanel implements ActionListener {
     }
 
     private void click(MouseEvent e) {
-        if (pause) {
+        if (state.equals(GameState.PAUSE)) {
             Point point = e.getPoint();
             int x = point.x;
             int y = point.y;
@@ -214,13 +203,8 @@ public class GameField extends JPanel implements ActionListener {
         }
     }
 
-    public void setResize(boolean resize, int newSize) {
-        this.resize = resize;
+    public void setResize(int newSize) {
         k = newSize >= prevSize ? (double) newSize / prevSize : -1 * ((double) prevSize / newSize);
-    }
-
-    public boolean getPause() {
-        return pause;
     }
 
 }
