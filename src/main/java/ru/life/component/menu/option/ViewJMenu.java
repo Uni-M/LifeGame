@@ -6,6 +6,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import ru.life.component.GameField;
 import ru.life.component.GameTimer;
+import ru.life.constant.GameState;
 
 import javax.annotation.PostConstruct;
 import javax.swing.*;
@@ -32,6 +33,7 @@ import static ru.life.constant.Size.DOT_SIZE;
 public class ViewJMenu extends JMenu {
 
     private final GameField gameField;
+    private final GameTimer gameTimer;
 
     @PostConstruct
     private void init() {
@@ -66,9 +68,9 @@ public class ViewJMenu extends JMenu {
                     }
                     s.addItemListener(es -> {
                         if (es.getStateChange() == ItemEvent.SELECTED) {
-                            gameField.setPause(true);
                             gameField.setPrevSize(DOT_SIZE);
-                            gameField.setResize(true, i);
+                            gameField.setState(GameState.RESIZE);
+                            gameField.setResize(i);
                             DOT_SIZE = i;
                         }
                     });
@@ -100,9 +102,8 @@ public class ViewJMenu extends JMenu {
     }
 
     private void updateSpeed(JMenuItem first, JMenuItem second, int k, String message) {
-        GameTimer timer = gameField.getTimer();
-        first.setEnabled(timer.updateSpeed(k));
-        timer.setReStartTimer(true);
+        first.setEnabled(gameTimer.updateSpeed(k));
+        gameTimer.setReStartTimer(true);
 
         if (!second.isEnabled()) {
             second.setEnabled(true);

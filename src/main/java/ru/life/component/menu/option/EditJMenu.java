@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import ru.life.component.GameField;
+import ru.life.constant.GameState;
 
 import javax.annotation.PostConstruct;
 import javax.swing.*;
@@ -36,17 +37,19 @@ public class EditJMenu extends JMenu {
     private void createButtons() {
 
         JMenuItem start = this.add(new JMenuItem("Start/Pause", KeyEvent.VK_S));
-        start.addActionListener(e -> gameField.setPause(!gameField.getPause()));
+        start.addActionListener(e -> {
+            gameField.setState(gameField.getState().nextState());
+        });
         start.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0));
 
         JMenuItem clean = this.add(new JMenuItem("Clean"));
-        clean.addActionListener(e -> gameField.setClean(true));
+        clean.addActionListener(e -> gameField.setState(GameState.CLEAN));
         clean.setAccelerator(KeyStroke.getKeyStroke("ctrl Z"));
 
         this.addSeparator();
 
         JMenuItem step = this.add(new JMenuItem("Step forward", KeyEvent.VK_F));
-        step.addActionListener(e -> gameField.setStep(true));
+        step.addActionListener(e -> gameField.setState(GameState.STEP));
         step.setAccelerator(KeyStroke.getKeyStroke("ctrl S"));
 
     }
