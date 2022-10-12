@@ -1,20 +1,21 @@
 package ru.life.constant;
 
 public class MessageTemplate {
-    // TODO сделать сообщение на английском и указать комбинации клавиш
-    public static final String HELP_MESSAGE = "Правила:\n" +
+    public static final String HELP_MESSAGE = "Rules:\n" +
             "\n" +
-            "1) Место действия игры — размеченная на клетки плоскость, которая может быть безграничной, ограниченной, или замкнутой.\n\n" +
-            "2) Каждая клетка на этой поверхности имеет восемь соседей, окружающих её, и может находиться в двух состояниях: быть «живой» (заполненной) или «мёртвой» (пустой).\n\n" +
-            "3) Распределение живых клеток в начале игры называется первым поколением. Каждое следующее поколение рассчитывается на основе предыдущего по таким правилам:\n\n" +
-            "    3.1) в пустой (мёртвой) клетке, с которой соседствуют три живые клетки, зарождается жизнь;\n\n" +
-            "    3.2) если у живой клетки есть две или три живые соседки, то эта клетка продолжает жить; в противном случае (если живых соседей меньше двух или больше трёх) клетка умирает («от одиночества» или «от перенаселённости»).\n\n" +
-            "4) Игра прекращается, если:\n\n" +
-            "    4.1) на поле не останется ни одной «живой» клетки;\n\n" +
-            "    4.2) конфигурация на очередном шаге в точности (без сдвигов и поворотов) повторит себя же на одном из более ранних шагов (складывается периодическая конфигурация)\n\n" +
-            "    4.3) при очередном шаге ни одна из клеток не меняет своего состояния (предыдущее правило действует на один шаг назад, складывается стабильная конфигурация)\n\n" +
+            "1) The place of action of the game is a boundless plane marked into cells.\n\n" +
+            "2) Each cell on this surface has eight neighbors surrounding it, and can be in two states: be \"alive\" (filled) or \"dead\" (empty).\n\n" +
+            "3) The distribution of cells at the beginning of the game is called the first generation. The emergence of the next generation is calculated according to this rules:\n\n" +
+            "    3.1) in an empty (dead) cell, with which three living cells are adjacent, life is born;\n\n" +
+            "    3.2) if a living cell has two or three living neighbors, then this cell continues to live; otherwise (if there are less than two or more than three living neighbors), the cell dies (“from loneliness” or “from overcrowding”).\n\n" +
+            "4) The game ends if:\n\n" +
+            "    4.1) not a single \"living\" cell will remain on the field;\n\n" +
+            "    4.2) the configuration at the next step will exactly (without shifts and rotations) repeat itself at one of the earlier steps (a periodic configuration is added)\n\n" +
+            "    4.3) at the next step, none of the cells changes its state (the previous rule appears one step back, a stable configuration is formed)\n\n" +
             "\n" +
-            "Игрок расставляет начальную конфигурацию «живых» клеток, далее при нажатии на пробел запускается игра. Чтобы добавить новые клетки необходимо нажать пробел, далее добавить клетки и нажать пробел для продолжения.\n\n";
+            "How to start:\n" +
+            "Place the initial configuration of \"live\" cells. Next, press the spacebar to start the game. \n" +
+            "To add new cells, press the spacebar.\n\n";
 
     public static final String MAX_SPEED = "The maximum speed is already set. Speed up is not available.";
     public static final String MIN_SPEED = "The minimum speed is already set. Speed down is not available.";
