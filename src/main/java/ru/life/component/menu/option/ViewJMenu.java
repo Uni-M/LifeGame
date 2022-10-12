@@ -44,9 +44,24 @@ public class ViewJMenu extends JMenu {
 
     private void createButtons() {
 
-        JMenuItem color = new JMenuItem("Change color", KeyEvent.VK_O);
+        JMenu color = new JMenu("Change color");
         this.add(color);
-        color.addActionListener(e -> {
+        color.setMnemonic(KeyEvent.VK_C);
+        createColorCellsMenuItem(color);
+        createColorBackgroundMenuItem(color);
+
+        createChangeSizeMenuItem();
+
+        JMenu speed = new JMenu("Speed");
+        speed.setMnemonic(KeyEvent.VK_S);
+        this.add(speed);
+        createChangeSpeedMenuItem(speed);
+
+    }
+
+    private void createColorCellsMenuItem(JMenu color) {
+        JMenuItem colorCells = color.add(new JMenuItem("Cells", KeyEvent.VK_C));
+        colorCells.addActionListener(e -> {
 
             Thread t = new Thread(() -> {
                 Color c = JColorChooser.showDialog(this, "Choose color", Color.BLACK);
@@ -54,9 +69,23 @@ public class ViewJMenu extends JMenu {
             });
             t.start();
         });
-        color.setAccelerator(KeyStroke.getKeyStroke("ctrl C"));
+        colorCells.setAccelerator(KeyStroke.getKeyStroke("ctrl C"));
+    }
 
+    private void createColorBackgroundMenuItem(JMenu color) {
+        JMenuItem colorBackground = color.add(new JMenuItem("Background", KeyEvent.VK_B));
+        colorBackground.addActionListener(e -> {
 
+            Thread t = new Thread(() -> {
+                Color c = JColorChooser.showDialog(this, "Choose color", Color.BLACK);
+                gameField.setBackground(c);
+            });
+            t.start();
+        });
+        colorBackground.setAccelerator(KeyStroke.getKeyStroke("ctrl B"));
+    }
+
+    private void createChangeSizeMenuItem() {
         JMenu size = new JMenu("Change size");
         size.setMnemonic(KeyEvent.VK_C);
         this.add(size);
@@ -81,14 +110,9 @@ public class ViewJMenu extends JMenu {
                     size.add(s);
                 }
         );
+    }
 
-
-        this.addSeparator();
-
-        JMenu speed = new JMenu("Speed");
-        speed.setMnemonic(KeyEvent.VK_S);
-        this.add(speed);
-
+    private void createChangeSpeedMenuItem(JMenu speed) {
         JMenuItem faster = this.add(new JMenuItem("Faster", KeyEvent.VK_F));
         JMenuItem slower = this.add(new JMenuItem("Slower", KeyEvent.VK_S));
         speed.add(faster);
