@@ -13,5 +13,5 @@
    
 ![giff](https://user-images.githubusercontent.com/61387671/194599158-394b8997-c6fc-4094-8612-e3ce0ac9b9e8.gif)
 
-![scr](https://user-images.githubusercontent.com/61387671/194599180-93e68b4b-ccb8-4c5e-bce3-e5bd3725a78d.png)
+<img width="659" alt="screenshot" src="https://user-images.githubusercontent.com/61387671/195576325-ccce0dd5-2fae-43b9-952e-15de97d7dd91.png">
 
