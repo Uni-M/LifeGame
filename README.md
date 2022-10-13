@@ -10,8 +10,13 @@
     4.2) the configuration at the next step will exactly (without shifts and rotations) repeat itself at one of the earlier steps (a periodic configuration is added)
     4.3) at the next step, none of the cells changes its state (the previous rule appears one step back, a stable configuration is formed)
 
-   
+
+*To build the project, you must also build a library with templates*
+
+
+
 ![giff](https://user-images.githubusercontent.com/61387671/194599158-394b8997-c6fc-4094-8612-e3ce0ac9b9e8.gif)
+
 
 ![scr](https://user-images.githubusercontent.com/61387671/194599180-93e68b4b-ccb8-4c5e-bce3-e5bd3725a78d.png)
 

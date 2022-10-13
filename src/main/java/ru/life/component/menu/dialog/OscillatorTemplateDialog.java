@@ -2,6 +2,7 @@ package ru.life.component.menu.dialog;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import ru.life.Oscillator;
 import ru.life.component.GameField;
 import ru.life.constant.GameState;
 
@@ -36,6 +37,7 @@ public class OscillatorTemplateDialog extends JDialog {
         JPanel panel = new JPanel();
 
         GridBagLayout layout = new GridBagLayout();
+
         panel.setLayout(layout);
 
         AtomicInteger constr = new AtomicInteger(1);
@@ -44,7 +46,7 @@ public class OscillatorTemplateDialog extends JDialog {
         oscillators.forEach(oscillator -> {
             GridBagConstraints constraint1 = new GridBagConstraints();
             constraint1.weightx = 0;
-            constraint1.weightx = 0;
+            constraint1.weighty = 0;
             constraint1.gridx = 0;
             constraint1.gridy = constr.get();
             constraint1.gridheight = 1;
@@ -55,6 +57,7 @@ public class OscillatorTemplateDialog extends JDialog {
                 if (es.getStateChange() == ItemEvent.SELECTED) {
                     gameField.setState(GameState.PAUSE);
                     gameField.setCells(oscillator.create());
+                    s.setSelected(false);
                 }
             });
 
@@ -65,13 +68,14 @@ public class OscillatorTemplateDialog extends JDialog {
 
                 GridBagConstraints constraint2 = new GridBagConstraints();
                 constraint2.weightx = 0;
-                constraint2.weightx = 0;
+                constraint2.weighty = 0;
                 constraint2.gridx = 1;
                 constraint2.gridy = constr.getAndIncrement();
                 constraint2.gridheight = 1;
                 constraint2.gridwidth = 1;
 
-                panel.add(oscillator.getLabel(), constraint2);
+                JLabel label = oscillator.getLabel();
+                panel.add(label, constraint2);
             } catch (IOException e) {
                 // TODO обработку сделать
             }
