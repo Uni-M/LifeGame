@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.life.component.GameField;
 import ru.life.constant.GameState;
-import ru.life.template.type.Oscillator;
+import ru.life.template.type.Gun;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,18 +16,17 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static ru.life.constant.Size.DIALOG_FRAME_SIZE_HEIGHT;
 import static ru.life.constant.Size.DIALOG_FRAME_SIZE_WIDTH;
 
-
 @Component
-public class OscillatorTemplateDialog extends JDialog {
+public class GunTemplateDialog extends JDialog {
 
     private final GameField gameField;
-    private final List<? extends Oscillator> oscillators;
+    private final List<? extends Gun> guns;
 
-    public OscillatorTemplateDialog(@Autowired GameField gameField,
-                                    @Autowired List<? extends Oscillator> oscillators) {
+    public GunTemplateDialog(@Autowired GameField gameField,
+                             @Autowired List<? extends Gun> guns) {
         super((Dialog) null, "Oscillators", true);
         this.gameField = gameField;
-        this.oscillators = oscillators;
+        this.guns = guns;
         this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         this.setSize(DIALOG_FRAME_SIZE_WIDTH, DIALOG_FRAME_SIZE_HEIGHT);
         this.add(new JScrollPane(createScrollPane()));
@@ -43,7 +42,7 @@ public class OscillatorTemplateDialog extends JDialog {
         AtomicInteger constr = new AtomicInteger(1);
         ButtonGroup sizeGroup = new ButtonGroup();
 
-        oscillators.forEach(oscillator -> {
+        guns.forEach(gun -> {
             GridBagConstraints constraint1 = new GridBagConstraints();
             constraint1.weightx = 0;
             constraint1.weighty = 0;
@@ -52,11 +51,11 @@ public class OscillatorTemplateDialog extends JDialog {
             constraint1.gridheight = 1;
             constraint1.gridwidth = 1;
 
-            JRadioButtonMenuItem s = new JRadioButtonMenuItem(oscillator.getName());
+            JRadioButtonMenuItem s = new JRadioButtonMenuItem(gun.getName());
             s.addItemListener(es -> {
                 if (es.getStateChange() == ItemEvent.SELECTED) {
                     gameField.setState(GameState.PAUSE);
-                    gameField.setCells(oscillator.create());
+                    gameField.setCells(gun.create());
                     s.setSelected(false);
                 }
             });
@@ -74,7 +73,7 @@ public class OscillatorTemplateDialog extends JDialog {
                 constraint2.gridheight = 1;
                 constraint2.gridwidth = 1;
 
-                JLabel label = oscillator.getLabel();
+                JLabel label = gun.getLabel();
                 panel.add(label, constraint2);
             } catch (IOException e) {
                 // TODO обработку сделать

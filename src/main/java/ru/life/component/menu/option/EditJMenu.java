@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import ru.life.component.GameField;
+import ru.life.component.menu.dialog.GunTemplateDialog;
 import ru.life.component.menu.dialog.OscillatorTemplateDialog;
 import ru.life.constant.GameState;
 
@@ -29,6 +30,7 @@ public class EditJMenu extends JMenu {
 
     private final GameField gameField;
     private final OscillatorTemplateDialog oscillatorTemplateDialog;
+    private final GunTemplateDialog gunTemplateDialog;
 
     @PostConstruct
     private void init() {
@@ -69,6 +71,12 @@ public class EditJMenu extends JMenu {
         JMenuItem oscillators = template.add(new JMenuItem("Oscillators"));
         oscillators.addActionListener(e -> {
             Thread t = new Thread(() -> oscillatorTemplateDialog.setVisible(true));
+            t.start();
+        });
+
+        JMenuItem guns = template.add(new JMenuItem("Guns"));
+        guns.addActionListener(e -> {
+            Thread t = new Thread(() -> gunTemplateDialog.setVisible(true));
             t.start();
         });
     }
