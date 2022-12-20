@@ -9,12 +9,11 @@ import ru.life.template.type.Oscillator;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ItemEvent;
-import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static ru.life.constant.Size.DIALOG_FRAME_SIZE_HEIGHT;
-import static ru.life.constant.Size.DIALOG_FRAME_SIZE_WIDTH;
+import static ru.life.constant.Size.OSC_DIALOG_FRAME_SIZE_WIDTH;
 
 
 @Component
@@ -29,7 +28,7 @@ public class OscillatorTemplateDialog extends JDialog {
         this.gameField = gameField;
         this.oscillators = oscillators;
         this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        this.setSize(DIALOG_FRAME_SIZE_WIDTH, DIALOG_FRAME_SIZE_HEIGHT);
+        this.setSize(OSC_DIALOG_FRAME_SIZE_WIDTH, DIALOG_FRAME_SIZE_HEIGHT);
         this.add(new JScrollPane(createScrollPane()));
     }
 
@@ -64,21 +63,16 @@ public class OscillatorTemplateDialog extends JDialog {
             sizeGroup.add(s);
             panel.add(s, constraint1);
 
-            try {
+            GridBagConstraints constraint2 = new GridBagConstraints();
+            constraint2.weightx = 0;
+            constraint2.weighty = 0;
+            constraint2.gridx = 1;
+            constraint2.gridy = constr.getAndIncrement();
+            constraint2.gridheight = 1;
+            constraint2.gridwidth = 1;
 
-                GridBagConstraints constraint2 = new GridBagConstraints();
-                constraint2.weightx = 0;
-                constraint2.weighty = 0;
-                constraint2.gridx = 1;
-                constraint2.gridy = constr.getAndIncrement();
-                constraint2.gridheight = 1;
-                constraint2.gridwidth = 1;
-
-                JLabel label = oscillator.getLabel();
-                panel.add(label, constraint2);
-            } catch (IOException e) {
-                // TODO обработку сделать
-            }
+            JLabel label = oscillator.getLabel();
+            panel.add(label, constraint2);
         });
 
         return panel;
