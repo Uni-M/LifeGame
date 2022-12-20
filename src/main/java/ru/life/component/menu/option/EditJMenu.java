@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import ru.life.component.GameField;
+import ru.life.component.menu.dialog.GunTemplateDialog;
+import ru.life.component.menu.dialog.OscillatorTemplateDialog;
 import ru.life.constant.GameState;
 
 import javax.annotation.PostConstruct;
@@ -17,8 +19,9 @@ import static ru.life.constant.MenuOptions.EDIT;
  * Adds main menu buttons to Edit.
  * The buttons perform the following functions:
  * - Start/Pause
- * - Clean
  * - Step forward
+ * - Templates
+ * - Clean
  */
 @Component
 @Order(2)
@@ -26,6 +29,8 @@ import static ru.life.constant.MenuOptions.EDIT;
 public class EditJMenu extends JMenu {
 
     private final GameField gameField;
+    private final OscillatorTemplateDialog oscillatorTemplateDialog;
+    private final GunTemplateDialog gunTemplateDialog;
 
     @PostConstruct
     private void init() {
@@ -42,16 +47,38 @@ public class EditJMenu extends JMenu {
         });
         start.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0));
 
-        JMenuItem clean = this.add(new JMenuItem("Clean"));
-        clean.addActionListener(e -> gameField.setState(GameState.CLEAN));
-        clean.setAccelerator(KeyStroke.getKeyStroke("ctrl Z"));
-
-        this.addSeparator();
 
         JMenuItem step = this.add(new JMenuItem("Step forward", KeyEvent.VK_F));
         step.addActionListener(e -> gameField.setState(GameState.STEP));
         step.setAccelerator(KeyStroke.getKeyStroke("ctrl S"));
 
+        this.addSeparator();
+
+        JMenu template = new JMenu("Templates");
+        this.add(template);
+        createTemplateChooser(template);
+
+        this.addSeparator();
+
+
+        JMenuItem clean = this.add(new JMenuItem("Clean"));
+        clean.addActionListener(e -> gameField.setState(GameState.CLEAN));
+        clean.setAccelerator(KeyStroke.getKeyStroke("ctrl Z"));
+
+    }
+
+    private void createTemplateChooser(JMenu template) {
+        JMenuItem oscillators = template.add(new JMenuItem("Oscillators"));
+        oscillators.addActionListener(e -> {
+            Thread t = new Thread(() -> oscillatorTemplateDialog.setVisible(true));
+            t.start();
+        });
+
+        JMenuItem guns = template.add(new JMenuItem("Guns"));
+        guns.addActionListener(e -> {
+            Thread t = new Thread(() -> gunTemplateDialog.setVisible(true));
+            t.start();
+        });
     }
 
 }

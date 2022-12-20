@@ -8,15 +8,23 @@
         <version>2.7.3</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>ru.life</groupId>
+    <groupId>ru.life.game</groupId>
     <artifactId>Life</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>Life</name>
-    <description>Demo project for Spring Boot</description>
+
     <properties>
         <java.version>17</java.version>
     </properties>
+
     <dependencies>
+
+        <dependency>
+            <groupId>ru.life.model</groupId>
+            <artifactId>LifeModels</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>

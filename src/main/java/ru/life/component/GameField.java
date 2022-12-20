@@ -89,8 +89,8 @@ public class GameField extends JPanel implements ActionListener {
     private void life() {
         cellsTemp = new boolean[SIZE_WIDTH][SIZE_HEIGHT];
 
-        for (int i = 1; i < (SIZE_WIDTH / DOT_SIZE) - 1; i++) {
-            for (int j = 1; j < (SIZE_HEIGHT / DOT_SIZE) - 1; j++) {
+        for (int i = 0; i < (SIZE_WIDTH / DOT_SIZE); i++) {
+            for (int j = 0; j < (SIZE_HEIGHT / DOT_SIZE); j++) {
                 int x = i * DOT_SIZE;
                 int y = j * DOT_SIZE;
                 checkNeighbours(cells[x][y], x, y);
@@ -115,11 +115,29 @@ public class GameField extends JPanel implements ActionListener {
     private void checkNeighbours(boolean isAlive, int x, int y) {
 
         int countNeighbours = 0;
+        int xleft, xright, yup, ydown;
 
-        int xleft = x - DOT_SIZE;
-        int yup = y - DOT_SIZE;
-        int xright = x + DOT_SIZE;
-        int ydown = y + DOT_SIZE;
+        if (x == 0) {
+            xleft = SIZE_WIDTH - DOT_SIZE;
+            xright = x + DOT_SIZE;
+        } else if (x == SIZE_WIDTH - DOT_SIZE) {
+            xright = 0;
+            xleft = x - DOT_SIZE;
+        } else {
+            xleft = x - DOT_SIZE;
+            xright = x + DOT_SIZE;
+        }
+
+        if (y == 0) {
+            ydown = y + DOT_SIZE;
+            yup = SIZE_HEIGHT - DOT_SIZE;
+        } else if (y == SIZE_HEIGHT - DOT_SIZE) {
+            yup = y - DOT_SIZE;
+            ydown = 0;
+        } else {
+            yup = y - DOT_SIZE;
+            ydown = y + DOT_SIZE;
+        }
 
         if (cells[xleft][ydown]) countNeighbours++;
         if (cells[x][ydown]) countNeighbours++;

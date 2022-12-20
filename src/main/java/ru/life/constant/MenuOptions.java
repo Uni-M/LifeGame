@@ -7,6 +7,7 @@ public enum MenuOptions {
     FILE("File"),
     EDIT("Edit"),
     VIEW("View"),
+    TEMPLATE("Template"),
     HELP("Help");
 
     private final String option;
